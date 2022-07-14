@@ -1,11 +1,6 @@
-const tmi = require('tmi.js');
 const axios = require('axios');
+const juliette = require('./twitch')
 require('dotenv').config();
 
-const client = new tmi.Client({
-    connection: { reconnect: true }, 
-    options: { debug: true },
-    identity: { 
-        
-    }
-})
+juliette.client.connect();
+juliette.client.on('message', juliette.handleMessages);
