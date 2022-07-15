@@ -1,0 +1,1 @@
+import { removeVariacoesDeLetras, newGame, charCheck } from './functions';

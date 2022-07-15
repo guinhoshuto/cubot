@@ -9,4 +9,19 @@ const cubot = new Client({
   ]
 })
 
-module.exports = { cubot }
+const handleDiscordInteraction = async (interaction) =>{
+    if(!interaction.isCommand()) return;
+    switch(interaction.commandName){
+        case 'cu':
+            await interaction.reply("@cali#5795");
+            break;
+        case 'mood':
+            const mood = interaction.options.getString('moods');
+            await interaction.reply({files: {mood}});
+            break;
+        case 'guz':
+            await interaction.reply("clap");
+    }
+}
+
+module.exports = { cubot, handleDiscordInteraction }
