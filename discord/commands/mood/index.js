@@ -1,12 +1,12 @@
 const fs = require('fs')
 
-const moods = [];
+const memes = [];
 const files = fs.readdirSync(__dirname);
-
 files.forEach(file => {
     if(file !== 'index.js')
-        moods.push(file)
+        memes.push(file)
 });
-console.log(moods)
 
-module.exports = moods;
+console.log(memes)
+
+module.exports = memes

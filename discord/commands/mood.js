@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const moods = require('./mood')
+const memes = require('./mood/')
 const choices = [];
 
-console.log(moods)
+console.log(memes)
 
-moods.forEach(mood => {
+memes.forEach(mood => {
     choices.push({name: mood, value: mood})
 })
 

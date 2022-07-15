@@ -17,6 +17,7 @@ const handleDiscordInteraction = async (interaction) =>{
             break;
         case 'mood':
             const mood = interaction.options.getString('moods');
+            console.log(mood)
             await interaction.reply({files: {mood}});
             break;
         case 'guz':
