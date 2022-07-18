@@ -15,14 +15,20 @@ const client = new tmi.Client({
 const handleMessages = (channel, tags, message, self) => {
     if(self) return;
     switch( message.toLowerCase()){
-        case '!cuzcuz':
+        case '!cuscuz':
             client.say(channel, `@${tags.username}, o cuscuz tá pronto!`)
+            break;
+        case '!13':
+            client.say(channel, 'guzcalRedstar')
             break;
         case '!chame':
             client.say(channel, "meu amigo pessoal @miguelchame")
             break;
         case '!orçamento secreto':
             client.say(channel, `!points`)
+            break;
+        case '!gamble all':
+            client.say(channel, `o ousado chegou`)
             break;
         case '!rachadinha':
             const c = channel.substring(1)
@@ -40,8 +46,15 @@ const handleMessages = (channel, tags, message, self) => {
             console.log(channel)
             break;
     }
-    if(message.substring(0,3) === '!ju') 
-        client.say(channel, `${message.substring(4)}`)
+    if(message.substring(0,3) === '!ju') {
+        const msgJu = message.substring(4);
+        console.log(msgJu.substring(0, 11));
+        if(msgJu.substring(0, 11) === '!givepoints'){
+            client.say(channel, `algum mod pode dar ban no @${tags.username}, por favor?`)
+        } else {
+            client.say(channel, `${msgJu}`)
+        }
+    }
 }
 
 

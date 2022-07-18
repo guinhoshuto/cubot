@@ -5,9 +5,17 @@ const fs = require('fs');
 const cubot = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.GUILD_MEMBERS
   ]
 })
+
+// const getMembers = async()
+// list.members.fetch().then(m => {
+//   let members = m.map(u => u.user.username)
+//   console.log(members) //array of all members
+//   //you can also use "m.each(u => console.log(u.user.username))" to log each one individually
+// })
 
 const handleDiscordInteraction = async (interaction) =>{
     if(!interaction.isCommand()) return;
