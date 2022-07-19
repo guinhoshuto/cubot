@@ -58,26 +58,26 @@ const handleMessages = (channel, tags, message, self) => {
         }
     }
 
-    if(tags.mod){
-        const words = message.split(" ");
-        let member = '';
-        let att = '';
-        switch(words[0]){
-            case '!addkappa':
-                att = 'kappa';
-                member = words[1];
-            case '!addFirst':
-                att = 'first';
-                member = words[1];
-        }
-        const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}`; 
-        axios.put(guzEndpoint)
-        .then(() => client.say(channel, "prontinho"))
-        .catch(e => {
-            client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
-            console.log('e', e);
-        })
-    }
+    // if(tags.mod){
+    //     const words = message.split(" ");
+    //     let member = '';
+    //     let att = '';
+    //     switch(words[0]){
+    //         case '!addkappa':
+    //             att = 'kappa';
+    //             member = words[1];
+    //         case '!addFirst':
+    //             att = 'first';
+    //             member = words[1];
+    //     }
+    //     const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}`; 
+    //     axios.put(guzEndpoint)
+    //     .then(() => client.say(channel, "prontinho"))
+    //     .catch(e => {
+    //         client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
+    //         console.log('e', e);
+    //     })
+    // }
 
     if(message.substring(0,3) === '!ju') {
         const msgJu = message.substring(4);
