@@ -49,6 +49,8 @@ const handleMessages = (channel, tags, message, self) => {
     if(message.substring(0,3) === '!ju') {
         const msgJu = message.substring(4);
         console.log(msgJu.substring(0, 11));
+        if(msgJu.substring(0, 7) === '!gamble'){
+            client.say(channel, `@${tags.username}, ô porra!`)
         if(msgJu.substring(0, 11) === '!givepoints'){
             client.say(channel, `algum mod pode dar ban no @${tags.username}, por favor?`)
         } else {
