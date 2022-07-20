@@ -74,7 +74,7 @@ const handleMessages = (channel, tags, message, self) => {
             .catch(e => console.log(e));
             break;
         case '!teste':
-            console.log(channel)
+            console.log(tags)
             break;
     }
     if(tags.username === 'mazeeein'){
@@ -87,16 +87,18 @@ const handleMessages = (channel, tags, message, self) => {
         const words = message.split(" ");
         let member = '';
         let att = '';
+        console.log(words[0])
         switch(words[0]){
             case '!addkappa':
                 att = 'kappa';
                 member = words[1];
-                atualizaStats(channel, att, member)
+                atualizaStats(channel, att, member);
                 break;
-            case '!addFirst':
+            case '!addfirst':
+                console.log('first');
                 att = 'first';
                 member = words[1];
-                atualizaStats(channel, att, member)
+                atualizaStats(channel, att, member);
                 break;
         }
     }
