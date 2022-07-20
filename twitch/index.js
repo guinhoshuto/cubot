@@ -17,9 +17,34 @@ function tiraArroba(nome){
     return;
 }
 
+function atualizaStats(channel, att, member){
+    const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}`; 
+    axios.put(guzEndpoint)
+    .then(() => client.say(channel, "prontinho"))
+    .catch(e => {
+        client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
+        console.log('e', e);
+    })
+}
+
 const handleMessages = (channel, tags, message, self) => {
     if(self) return;
-    switch( message.toLowerCase()){
+    console.log(tags.mod)
+    message = message.toLowerCase()
+    switch(message){
+        case '!kappaju':
+            axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
+            .then(kappa => {
+                console.log(kappa);
+                let msg = 'Lista de ganhadores do slots (geral): ';
+                kappa.data.forEach(u => msg += `${u.username}: (${u.kappa}x) |`)
+                client.say(channel, msg);
+            })
+            .catch((e) => {
+                console.log(e)
+                client.say(channel, `eu não sei o(╥﹏╥)o`)
+            })
+            break;
         case '!cuscuz':
             client.say(channel, `@${tags.username}, o cuscuz tá pronto!`)
             break;
@@ -58,26 +83,23 @@ const handleMessages = (channel, tags, message, self) => {
         }
     }
 
-    // if(tags.mod){
-    //     const words = message.split(" ");
-    //     let member = '';
-    //     let att = '';
-    //     switch(words[0]){
-    //         case '!addkappa':
-    //             att = 'kappa';
-    //             member = words[1];
-    //         case '!addFirst':
-    //             att = 'first';
-    //             member = words[1];
-    //     }
-    //     const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}`; 
-    //     axios.put(guzEndpoint)
-    //     .then(() => client.say(channel, "prontinho"))
-    //     .catch(e => {
-    //         client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
-    //         console.log('e', e);
-    //     })
-    // }
+    if(tags.mod){
+        const words = message.split(" ");
+        let member = '';
+        let att = '';
+        switch(words[0]){
+            case '!addkappa':
+                att = 'kappa';
+                member = words[1];
+                atualizaStats(channel, att, member)
+                break;
+            case '!addFirst':
+                att = 'first';
+                member = words[1];
+                atualizaStats(channel, att, member)
+                break;
+        }
+    }
 
     if(message.substring(0,3) === '!ju') {
         const msgJu = message.substring(4);
