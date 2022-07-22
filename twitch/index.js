@@ -18,7 +18,7 @@ function tiraArroba(nome){
 }
 
 function atualizaStats(channel, att, member){
-    const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}`; 
+    const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}/1`; 
     axios.put(guzEndpoint)
     .then(() => client.say(channel, "prontinho"))
     .catch(e => {
@@ -29,8 +29,9 @@ function atualizaStats(channel, att, member){
 
 const handleMessages = (channel, tags, message, self) => {
     if(self) return;
-    console.log(tags.mod)
-    message = message.toLowerCase()
+    console.log(tags.mod);
+    message = message.toLowerCase();
+    const words = message.toLowerCase().split(" ");
     switch(message){
         case '!kappaju':
             axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
@@ -62,16 +63,22 @@ const handleMessages = (channel, tags, message, self) => {
             break;
         case '!rachadinha':
             axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}`)
-            const c = channel.substring(1)
-            axios.get(`http://feras-leaderboards.herokuapp.com/find/${c}/${tags.username}`)
-            .then(user => {
-                if(Object.keys(user.data).length === 0 ||user.data.user.points < 2000 ){
-                    client.say(channel, `!givepoints @${tags.username} 1000`)
-                } else {
-                    client.say(channel, 'corrupção não é bagunça!')
-                }
+            .then(() => {
+                const c = channel.substring(1)
+                axios.get(`http://feras-leaderboards.herokuapp.com/find/${c}/${tags.username}`)
+                .then(user => {
+                    if(Object.keys(user.data).length === 0 ||user.data.user.points < 2000 ){
+                        client.say(channel, `!givepoints @${tags.username} 1000`)
+                    } else {
+                        client.say(channel, 'corrupção não é bagunça!')
+                    }
+                })
+                .catch(e => console.log(e));
             })
-            .catch(e => console.log(e));
+            .catch((e) => {
+                client.say(channel, `@${tags.username} a casa caiu`)
+                console.log(e)
+            })
             break;
         case '!teste':
             console.log(tags)
@@ -83,8 +90,7 @@ const handleMessages = (channel, tags, message, self) => {
         }
     }
 
-    if(tags.mod){
-        const words = message.split(" ");
+    if(tags.mod || tags.username === 'guzcalp'){
         let member = '';
         let att = '';
         console.log(words[0])
@@ -103,17 +109,17 @@ const handleMessages = (channel, tags, message, self) => {
         }
     }
 
-    if(message.substring(0,3) === '!ju') {
-        const msgJu = message.substring(4);
-        console.log(msgJu.substring(0, 11));
-        if(msgJu.substring(0, 7) === '!gamble'){
+    if(words[0] === '!ju') {
+        words.shift();
+        console.log(words)
+        if(words.includes('!gamble')){
             client.say(channel, `@${tags.username}, ô porra!`)
-        } else if(msgJu.substring(0, 6) === '!slots'){
+        } else if(words.includes('!slots') || words.includes('!slot')){
             client.say(channel, `Hoje não, Faro!`)
-        } else if(msgJu.substring(0, 11) === '!givepoints'){
+        } else if(words.includes('!givepoints')){
             client.say(channel, `algum mod pode dar ban no @${tags.username}, por favor?`)
         } else {
-            client.say(channel, `${msgJu}`)
+            client.say(channel, words.join(' '))
         }
     }
 }
