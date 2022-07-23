@@ -57,7 +57,7 @@ const handleMessages = (channel, tags, message, self) => {
                 })
                 break;
         case '!rachadinha':
-            axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}`)
+            axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}/1000`)
             .then(() => {
                 axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`)
                 .then(user => {
