@@ -1,4 +1,3 @@
-const axios = require('axios');
 const juliette = require('./twitch')
 const { cubot, handleDiscordInteraction} = require('./discord')
 require('dotenv').config();
