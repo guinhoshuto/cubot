@@ -23,18 +23,18 @@ function tiraArroba(nome){
     return nome;
 }
 
-function atualizaStats(channel, att, member){
+const atualizaStats = async (channel, att, member) => {
     const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${tiraArroba(member)}/1`; 
     console.log(guzEndpoint)
-    axios.put(guzEndpoint)
-    .then(() => client.say(channel, "prontinho"))
-    .catch(e => {
+    try{
+        await axios.put(guzEndpoint)
+    } catch(e){
         client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
         console.log('e', e);
-    })
+    }
 }
 
-const handleMessages = (channel, tags, message, self) => {
+const handleMessages = async (channel, tags, message, self) => {
     if(self) return;
     const channelName = channel.substring(1)
     message = message.toLowerCase();
@@ -57,22 +57,28 @@ const handleMessages = (channel, tags, message, self) => {
                 })
                 break;
         case '!rachadinha':
-            axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}/1000`)
-            .then(() => {
-                axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`)
-                .then(user => {
-                    if(Object.keys(user.data).length === 0 ||user.data.user.points < 2000 ){
+            const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
+            console.log(userPoints.data)
+
+            const dividaJu = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${tiraArroba(tags.username)}`)
+            console.log(dividaJu.data)
+
+            if(parseInt(dividaJu.data[0].dividaJu)<10000){
+                if(Object.keys(userPoints.data).length === 0 || userPoints.data.user.points < 2000 ){
+                    axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}/1000`)
+                    .then(() => {
                         client.say(channel, `!givepoints @${tags.username} 1000`)
-                    } else {
-                        client.say(channel, 'corrupção não é bagunça!')
-                    }
-                })
-                .catch(e => console.log(e));
-            })
-            .catch((e) => {
-                client.say(channel, `@${tags.username} a casa caiu`)
-                console.log(e)
-            })
+                    })
+                    .catch((e) => {
+                        client.say(channel, `@${tags.username} a casa caiu`)
+                        console.log(e)
+                    })
+                } else {
+                    client.say(channel, 'corrupção não é bagunça!')
+                }
+            } else {
+                client.say(channel, `@${tags.username} já te dei mais de ${dividaJu.data[0].dividaJu} ponguz. Quem quer rir tem que fazer rir.`)
+            }
             break;
         }
         if(tags.mod || tags.username === 'guzcalp'){
@@ -83,7 +89,8 @@ const handleMessages = (channel, tags, message, self) => {
                 case '!addkappa':
                     att = 'kappa';
                     member = words[1];
-                    atualizaStats(channel, att, member);
+                    await atualizaStats(channel, att, member);
+                    client.say(channel, 'prontinho')
                     break;
                 case '!addfirst':
                     console.log('first');
@@ -93,20 +100,40 @@ const handleMessages = (channel, tags, message, self) => {
                     break;
             }
         }
-        if(tags.username === 'streamelements' & words.at(-4) === 'ganhou'){
-            console.log(message)
-            console.log(words[12])
-            atualizaStats(channel, 'kappa', words[0]);
-            axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
-            .then(kappa => {
-                let msg = 'Lista de ganhadores do slots (geral): ';
-                kappa.data.forEach(u => msg += `${u.username}: (${u.kappa}x) |`)
-                client.say(channel, msg);
-            })
-            .catch((e) => {
-                console.log(e)
-                client.say(channel, `eu não sei o(╥﹏╥)o`)
-            })
+        if(tags.username === 'streamelements'){
+            if(words.at(-4) === 'ganhou'){
+                console.log(message)
+                console.log(words[12])
+                await atualizaStats(channel, 'kappa', words[0]);
+                axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
+                .then(kappa => {
+                    let msg = 'Lista de ganhadores do slots (geral): ';
+                    kappa.data.forEach(u => msg += `${u.username}: (${u.kappa}x) |`)
+                    client.say(channel, msg);
+                })
+                .catch((e) => {
+                    console.log(e)
+                    client.say(channel, `eu não sei o(╥﹏╥)o`)
+                })
+            }
+            if(words.at(-2) === 'juliette_freire_bot' & words[1] === 'deu'){
+                axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${words[0]}/-1`)
+                .then(() => {
+                    axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${tiraArroba(words[0])}`)
+                    .then(data => {
+                        client.say(channel, `obrigada, agora você me deve só ${data.data[0].dividaJu} ponguz`)
+                    })
+                    .catch(e => {
+                        console.log(e);
+                        client.say(channel, `completamente abublé das ideias`)
+                    })
+                })
+                .catch((e) => {
+                    console.log(e)
+                    client.say(channel, `completamente ablublublé das ideias`)
+                })
+                
+            }
         }
     }
 
