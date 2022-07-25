@@ -96,7 +96,8 @@ const handleMessages = async (channel, tags, message, self) => {
                     console.log('first');
                     att = 'first';
                     member = words[1];
-                    atualizaStats(channel, att, member);
+                    await atualizaStats(channel, att, member);
+                    client.say(channel, 'prontinho')
                     break;
             }
         }
