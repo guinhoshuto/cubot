@@ -190,6 +190,11 @@ const handleMessages = async (channel, tags, message, self) => {
             client.say(channel, `Hoje não, Faro!`)
         } else if(words.includes('!givepoints')){
             client.say(channel, `algum mod pode dar ban no @${tags.username}, por favor?`)
+        } else if(words.includes('!join')){
+            client.say(channel, words.join(' '))
+            setTimeout(() => {
+                client.say(channel, `obrigado @${tags.username}, você é um amigo!`)
+            }, 2000)
         } else {
             client.say(channel, words.join(' '))
         }

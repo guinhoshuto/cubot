@@ -7,3 +7,4 @@ Twitch:
     ? adicionar kappa automaticamente
     - criar alguma regra em caso de dívida negativa
     - se mensagem do openai for maior que 50 caracteres, dividir msg com tempo de envio
+    - criar variéaveis com msgs de erro
