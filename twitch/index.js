@@ -118,7 +118,7 @@ const handleMessages = async (channel, tags, message, self) => {
                 })
             }
             if(words.at(-2) === 'juliette_freire_bot' & words[1] === 'deu'){
-                axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${words[0]}/-1`)
+                axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${words[0]}/-${words[2]}`)
                 .then(() => {
                     axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${tiraArroba(words[0])}`)
                     .then(data => {
