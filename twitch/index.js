@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const axios = require('axios');
+const { geralChannel, cubot } = require('../discord')
 require('dotenv').config();
 
 const configuration = new Configuration({
@@ -36,6 +37,7 @@ const atualizaStats = async (channel, att, member) => {
 
 const handleMessages = async (channel, tags, message, self) => {
     if(self) return;
+    // console.log(cubot.channels.cache.get('855695828856864799'))
     const channelName = channel.substring(1)
     message = message.toLowerCase();
     const words = message.split(" ");
@@ -43,6 +45,12 @@ const handleMessages = async (channel, tags, message, self) => {
     if(channelName === 'guzcalp'){
         console.log(words)
         switch(message){
+            case '!cornos':
+                cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
+                break;
+            case '!corno':
+                cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
+                break;
             case '!kappaju':
                 console.log(message);
                 axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
@@ -56,30 +64,30 @@ const handleMessages = async (channel, tags, message, self) => {
                     client.say(channel, `eu não sei o(╥﹏╥)o`)
                 })
                 break;
-        case '!rachadinha':
-            const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
-            console.log(userPoints.data)
+            case '!rachadinha':
+                const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
+                console.log(userPoints.data)
 
-            const dividaJu = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${tiraArroba(tags.username)}`)
-            console.log(dividaJu.data)
+                const dividaJu = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${tiraArroba(tags.username)}`)
+                console.log(dividaJu.data)
 
-            if(parseInt(dividaJu.data[0].dividaJu)<10000){
-                if(Object.keys(userPoints.data).length === 0 || userPoints.data.user.points < 2000 ){
-                    axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}/1000`)
-                    .then(() => {
-                        client.say(channel, `!givepoints @${tags.username} 1000`)
-                    })
-                    .catch((e) => {
-                        client.say(channel, `@${tags.username} a casa caiu`)
-                        console.log(e)
-                    })
+                if(parseInt(dividaJu.data[0].dividaJu)<10000){
+                    if(Object.keys(userPoints.data).length === 0 || userPoints.data.user.points < 2000 ){
+                        axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${tiraArroba(tags.username)}/1000`)
+                        .then(() => {
+                            client.say(channel, `!givepoints @${tags.username} 1000`)
+                        })
+                        .catch((e) => {
+                            client.say(channel, `@${tags.username} a casa caiu`)
+                            console.log(e)
+                        })
+                    } else {
+                        client.say(channel, 'corrupção não é bagunça!')
+                    }
                 } else {
-                    client.say(channel, 'corrupção não é bagunça!')
+                    client.say(channel, `@${tags.username} já te dei mais de ${dividaJu.data[0].dividaJu} ponguz. Quem quer rir tem que fazer rir.`)
                 }
-            } else {
-                client.say(channel, `@${tags.username} já te dei mais de ${dividaJu.data[0].dividaJu} ponguz. Quem quer rir tem que fazer rir.`)
-            }
-            break;
+                break;
         }
         if(tags.mod || tags.username === 'guzcalp'){
             let member = '';

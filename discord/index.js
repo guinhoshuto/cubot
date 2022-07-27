@@ -10,6 +10,8 @@ const cubot = new Client({
   ]
 })
 
+const geralChannel = cubot.channels.cache.get('855695828856864799');
+
 // const getMembers = async()
 // list.members.fetch().then(m => {
 //   let members = m.map(u => u.user.username)
@@ -33,4 +35,4 @@ const handleDiscordInteraction = async (interaction) =>{
     }
 }
 
-module.exports = { cubot, handleDiscordInteraction }
+module.exports = { cubot, handleDiscordInteraction, geralChannel }
