@@ -62,7 +62,7 @@ const handleMessages = async (channel, tags, message, self) => {
                 .catch((e) => {
                     console.log(e)
                     client.say(channel, `eu não sei o(╥﹏╥)o`)
-                })
+                });
                 break;
             case '!rachadinha':
                 const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);

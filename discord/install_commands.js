@@ -13,4 +13,4 @@ console.log('comecou a cadastrar');
 rest.put( Routes.applicationGuildCommands(process.env.CLIENT_ID, guild), { body: commands }
 )
 .then(() => console.log( 'instalou os comandos'))
-.catch(() => console.log('e:', e))
+.catch((e) => console.log('e:', e))

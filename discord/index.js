@@ -1,6 +1,6 @@
 const { Client, Intents } = require('discord.js');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior  } = require('@discordjs/voice');
 const path = require('path');
-const fs = require('fs');
 
 const cubot = new Client({
   intents: [
@@ -11,13 +11,6 @@ const cubot = new Client({
 })
 
 const geralChannel = cubot.channels.cache.get('855695828856864799');
-
-// const getMembers = async()
-// list.members.fetch().then(m => {
-//   let members = m.map(u => u.user.username)
-//   console.log(members) //array of all members
-//   //you can also use "m.each(u => console.log(u.user.username))" to log each one individually
-// })
 
 const handleDiscordInteraction = async (interaction) =>{
     if(!interaction.isCommand()) return;
@@ -32,6 +25,33 @@ const handleDiscordInteraction = async (interaction) =>{
             break;
         case 'guz':
             await interaction.reply("clap");
+		case 'teste':
+			const player = createAudioPlayer({
+				behaviors: {
+					noSubscriber: NoSubscriberBehavior.Play
+				}
+			});
+			// const file = path.join(__dirname, 'nanohakase.mp4')
+			const file = path.join(__dirname, 'horarios' ,'0000.mp3')
+			const resource = createAudioResource(file, {inlineVolume: true});
+			resource.volume.setVolume(0.5);
+			const connection = joinVoiceChannel({
+				channelId: '855694949151801354',
+				guildId: '855694948707991593',
+				selfDeaf: false,
+				adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
+			})
+			console.log(path.join(__dirname, 'horarios', '0000.mp3'))
+			player.play(resource)
+			player.on('error', error => {
+				console.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
+			});
+
+			connection.subscribe(player)
+			// console.log(player);
+			console.log(player._state.resource);
+			connection.destroy()
+			await interaction.reply({content: 'hm', ephemeral: true })
     }
 }
 
