@@ -44,6 +44,12 @@ const handleMessages = async (channel, tags, message, self) => {
     console.log(words.at(-4))
     if(channelName === 'guzcalp'){
         console.log(words)
+        if(words[0] === '!preceito' || words[0] === '!preceitos'){
+            const preceitos = await axios.get(`http://feras-leaderboards.herokuapp.com/cubot/preceitos/${words[1] !== undefined ? words[1] : ''}`)
+            const preceito = preceitos.data[Math.floor(Math.random()*preceitos.data.length)]
+            console.log(preceitos);
+            client.say(channel, `Preceito #${preceito.numero}: ${preceito.nome} - ${preceito.preceito}`)
+        }
         switch(message){
             case '!cornos':
                 cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
