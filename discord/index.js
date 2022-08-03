@@ -20,7 +20,7 @@ const handleDiscordInteraction = async (interaction) =>{
 			const wish = new MessageEmbed()
 				.setColor('#0099ff')
 				.setTitle('Wish')
-				.setImage(path.join(__dirname, 'wish.gif'))
+				.setImage(`https://feras-leaderboards.herokuapp.com/images/wish.gif`)
 
 			await cubot.channels.cache.get(interaction.channelId).send({embeds: [wish]});
 			break;
