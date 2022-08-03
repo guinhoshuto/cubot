@@ -1,4 +1,4 @@
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior  } = require('@discordjs/voice');
 const path = require('path');
 
@@ -15,6 +15,15 @@ const geralChannel = cubot.channels.cache.get('855695828856864799');
 const handleDiscordInteraction = async (interaction) =>{
     if(!interaction.isCommand()) return;
     switch(interaction.commandName){
+		case 'tiro':
+			console.log(interaction.channelId)
+			const wish = new MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle('Wish')
+				.setImage(path.join(__dirname, 'wish.gif'))
+
+			await cubot.channels.cache.get(interaction.channelId).send({embeds: [wish]});
+			break;
         case 'cu':
             await interaction.reply("@cali#5795");
             break;
