@@ -1,6 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const axios = require('axios');
+const { conn } = require('../db')
 const { geralChannel, cubot } = require('../discord')
 require('dotenv').config();
 
@@ -19,6 +20,10 @@ const client = new tmi.Client({
     channels: ['marcellus_v', 'guzcalp', 'guinhoshuto']
 });
 
+function addSlashes( str ) {
+    return (str + '').replace(/[\\"']/g, '').replace(/\u0000/g, '');
+}
+
 function tiraArroba(nome){
     if(nome.charAt(0)==='@') return nome.substring(1); 
     return nome;
@@ -36,9 +41,20 @@ const atualizaStats = async (channel, att, member) => {
 }
 
 const handleMessages = async (channel, tags, message, self) => {
+    const channelName = channel.substring(1)
+    console.log(channel);
+    try{
+        conn.query(`INSERT INTO logs (name, payload_data) VALUES ('twitch', '{
+            "channel": "${channelName}", 
+            "time": "${tags['tmi-sent-ts']}", 
+            "username": "${tags.username}", 
+            "message": "${addSlashes(message)}" 
+        }')`)
+    } catch (e){
+        console.log(e)
+    }
     if(self) return;
     // console.log(cubot.channels.cache.get('855695828856864799'))
-    const channelName = channel.substring(1)
     message = message.toLowerCase();
     const words = message.split(" ");
     console.log(words.at(-4))
@@ -158,7 +174,7 @@ const handleMessages = async (channel, tags, message, self) => {
         openai.createCompletion({
             model: 'text-davinci-002',
             prompt: pergunta,
-            temperature: 0.9,
+            temperature: 0.7,
             max_tokens: 100,
         })
         .then((response) => {

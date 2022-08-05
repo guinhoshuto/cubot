@@ -2,6 +2,7 @@ const juliette = require('./twitch')
 const { cubot, handleDiscordInteraction} = require('./discord')
 require('dotenv').config();
 
+
 juliette.client.connect();
 juliette.client.on('message', juliette.handleMessages);
 
