@@ -1,6 +1,6 @@
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const { createReadStream } = require('node:fs');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior, getVoiceConnection, demuxProbe  } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus  } = require('@discordjs/voice');
 const path = require('path');
 
 const cubot = new Client({
@@ -23,7 +23,7 @@ const handleDiscordInteraction = async (interaction) =>{
     switch(interaction.commandName){
 		case 'hora':
 			const now = new Date()
-			const horarioOficial = now.getHours().toString() + '00'; 
+			const horarioOficial = ('0'+now.getHours().toString()).slice(-2) + '00'; 
 			console.log(horarioOficial)
 			await interaction.reply({files: [path.join(__dirname, 'horarios', horarioOficial + '.mp3')], ephemeral: true})	
 			break;
@@ -48,32 +48,30 @@ const handleDiscordInteraction = async (interaction) =>{
             await interaction.reply("clap");
 			break;
 		case 'teste':
-			const player = createAudioPlayer({
-				behaviors: {
-					noSubscriber: NoSubscriberBehavior.Play
-				}
-			});
+			const player = createAudioPlayer();
 			// const file = path.join(__dirname, 'nanohakase.mp4')
-			const file = path.join(__dirname, 'horarios' ,'0000.mp3')
-			const resource = createAudioResource('https://cdn.discordapp.com/attachments/701502306545434807/1004614586084900934/0000.mp3', {inlineVolume: true});
-			resource.volume.setVolume(1);
+			const file = path.join(__dirname, 'horarios', '0000.mp3')
+			const resource = await createAudioResource(createReadStream(file), {inlineVolume: true});
+			resource.volume.setVolume(0.9);
 			const connection = joinVoiceChannel({
 				channelId: '1004804075948363786',
 				guildId: '855694948707991593',
 				selfDeaf: false,
 				adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-			})
+			}).subscribe(player)
 			console.log(path.join(__dirname, 'horarios', '0000.mp3'))
+			const mp3Stream = await probeAndCreateResource(createReadStream(file));
 			player.play(resource)
-			player.on('error', error => {
-				console.error(`Error: ${error.message} with resource ${error.resource.metadata.title}`);
+			player.on(AudioPlayerStatus.Idle, () => {
+				connection.destroy();
 			});
-			const connection1 = getVoiceConnection('855694948707991593');
-
-			connection.subscribe(player)
-			connection1.subscribe(player)
+			// const connection1 = getVoiceConnection('855694948707991593');
+		
+			// connection.subscribe(player)
+			// connection1.subscribe(player)
 			// console.log(player);
-			console.log(player._state.resource);
+			// console.log(player._state.resource);
+			console.log(resource)
 			// connection.destroy()
 			await interaction.reply({content: 'hm', ephemeral: true })
     }
