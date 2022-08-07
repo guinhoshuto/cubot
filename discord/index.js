@@ -26,7 +26,7 @@ const handleDiscordInteraction = async (interaction) =>{
     switch(interaction.commandName){
 		case 'hora':
 			console.log(horarioOficial)
-			await interaction.reply({files: [path.join(__dirname, 'horarios', horarioOficial + '.mp3')], ephemeral: true})	
+			await interaction.reply({files: [path.join(__dirname, 'horarios', 'discord', horarioOficial + '.mp3')], ephemeral: true})	
 			break;
 		case 'tiro':
 			console.log(interaction.channelId)
