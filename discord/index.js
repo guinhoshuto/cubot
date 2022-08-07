@@ -7,7 +7,8 @@ const cubot = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MEMBERS
+    Intents.FLAGS.GUILD_MEMBERS,
+	Intents.FLAGS.GUILD_VOICE_STATES
   ]
 })
 
@@ -19,11 +20,11 @@ async function probeAndCreateResource(readableStream) {
 const geralChannel = cubot.channels.cache.get('855695828856864799');
 
 const handleDiscordInteraction = async (interaction) =>{
+	const now = new Date().toLocaleTimeString('pt-BR', {timeZone: 'America/Sao_Paulo'})
+	const horarioOficial = ('0'+now.substring(0,2)).slice(-2) + '00'; 
     if(!interaction.isCommand()) return;
     switch(interaction.commandName){
 		case 'hora':
-			const now = new Date()
-			const horarioOficial = ('0'+now.getHours().toString()).slice(-2) + '00'; 
 			console.log(horarioOficial)
 			await interaction.reply({files: [path.join(__dirname, 'horarios', horarioOficial + '.mp3')], ephemeral: true})	
 			break;
@@ -50,24 +51,24 @@ const handleDiscordInteraction = async (interaction) =>{
 		case 'teste':
 			const player = createAudioPlayer();
 			// const file = path.join(__dirname, 'nanohakase.mp4')
-			const file = path.join(__dirname, 'horarios', '0000.mp3')
+			const file = path.join(__dirname, 'horarios', horarioOficial + '.mp3')
 			const resource = await createAudioResource(createReadStream(file), {inlineVolume: true});
 			resource.volume.setVolume(0.9);
 			const connection = joinVoiceChannel({
-				channelId: '1004804075948363786',
+				channelId: '855694949151801354',
 				guildId: '855694948707991593',
 				selfDeaf: false,
 				adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-			}).subscribe(player)
+			})
+			connection.subscribe(player)
 			console.log(path.join(__dirname, 'horarios', '0000.mp3'))
-			const mp3Stream = await probeAndCreateResource(createReadStream(file));
+			// const mp3Stream = await probeAndCreateResource(createReadStream(file));
 			player.play(resource)
 			player.on(AudioPlayerStatus.Idle, () => {
 				connection.destroy();
 			});
 			// const connection1 = getVoiceConnection('855694948707991593');
 		
-			// connection.subscribe(player)
 			// connection1.subscribe(player)
 			// console.log(player);
 			// console.log(player._state.resource);

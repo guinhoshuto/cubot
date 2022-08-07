@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const axios = require('axios');
-const { conn } = require('../db')
+// const { conn } = require('../db')
 const { geralChannel, cubot } = require('../discord')
 require('dotenv').config();
 
@@ -43,16 +43,16 @@ const atualizaStats = async (channel, att, member) => {
 const handleMessages = async (channel, tags, message, self) => {
     const channelName = channel.substring(1)
     console.log(channel);
-    try{
-        conn.query(`INSERT INTO logs (name, payload_data) VALUES ('twitch', '{
-            "channel": "${channelName}", 
-            "time": "${tags['tmi-sent-ts']}", 
-            "username": "${tags.username}", 
-            "message": "${addSlashes(message)}" 
-        }')`)
-    } catch (e){
-        console.log(e)
-    }
+    // try{
+    //     conn.query(`INSERT INTO logs (name, payload_data) VALUES ('twitch', '{
+    //         "channel": "${channelName}", 
+    //         "time": "${tags['tmi-sent-ts']}", 
+    //         "username": "${tags.username}", 
+    //         "message": "${addSlashes(message)}" 
+    //     }')`)
+    // } catch (e){
+    //     console.log(e)
+    // }
     if(self) return;
     // console.log(cubot.channels.cache.get('855695828856864799'))
     message = message.toLowerCase();
