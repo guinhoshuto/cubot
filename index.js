@@ -22,7 +22,7 @@ cubot.login(process.env.DISCORD_TOKEN)
 
 cubot.on('interactionCreate', handleDiscordInteraction)
 
-app.get('/', async (req, res) => {
+app.get('/horario-oficial', async (req, res) => {
     console.log('horario acionado')
 	const now = new Date().toLocaleTimeString('pt-BR', {timeZone: 'America/Sao_Paulo'})
 	const horarioOficial = ('0'+now.substring(0,2)).slice(-2) + '00'; 

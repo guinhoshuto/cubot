@@ -8,14 +8,9 @@ const cubot = new Client({
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MEMBERS,
-	Intents.FLAGS.GUILD_VOICE_STATES
+    Intents.FLAGS.GUILD_VOICE_STATES
   ]
 })
-
-async function probeAndCreateResource(readableStream) {
-	const { stream, type } = await demuxProbe(readableStream);
-	return createAudioResource(stream, { inputType: type });
-}
 
 const geralChannel = cubot.channels.cache.get('855695828856864799');
 
@@ -61,19 +56,11 @@ const handleDiscordInteraction = async (interaction) =>{
 				adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
 			})
 			connection.subscribe(player)
-			console.log(path.join(__dirname, 'horarios', '0000.mp3'))
-			// const mp3Stream = await probeAndCreateResource(createReadStream(file));
 			player.play(resource)
 			player.on(AudioPlayerStatus.Idle, () => {
 				connection.destroy();
 			});
-			// const connection1 = getVoiceConnection('855694948707991593');
-		
-			// connection1.subscribe(player)
-			// console.log(player);
-			// console.log(player._state.resource);
 			console.log(resource)
-			// connection.destroy()
 			await interaction.reply({content: 'hm', ephemeral: true })
     }
 }
