@@ -1,31 +1,30 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const axios = require('axios');
 
-const data = () => {
+const data = async () => {
     const options = []; 
-    axios.get('http://feras-leaderboards.herokuapp.com/cubot/copypasta')
-    .then(copypastas =>{
-        copypastas.data.forEach(c => {
-            options.push({name: c.nome.split("_").join(" "), value: c.nome})
-        });
-        console.log(options)
+    const copypastas = await axios.get('http://feras-leaderboards.herokuapp.com/cubot/copypasta')
+    copypastas.data.forEach(c => {
+        options.push({name: c.nome.split("_").join(" "), value: c.nome})
+    });
+    console.log(options)
 
-        const command = new SlashCommandBuilder()
-            .setName('copypasta')
-            .setDescription('copia aí')
-            .addStringOption(option => 
-                option.setName('copypastas')
-                    .setDescription('selecione uma copypasta')
-                    .setRequired(true)
-                    .addChoices(
-                        ...options
-                    )
-                );
-        // console.log(options)
-        return command;
-    })
+    const command = new SlashCommandBuilder()
+        .setName('copypasta')
+        .setDescription('copia aí')
+        .addStringOption(option => 
+            option.setName('copypastas')
+                .setDescription('selecione uma copypasta')
+                .setRequired(true)
+                .addChoices(
+                    ...options
+                )
+            );
+    // console.log(options)
+    return command;
 };
 
+console.log(data())
 
 // const getCopypastas = async () => {
 //     return axios.get('http://feras-leaderboards.herokuapp.com/cubot/copypasta')

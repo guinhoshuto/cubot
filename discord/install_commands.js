@@ -10,7 +10,9 @@ const rest = new REST({ version: '9'}).setToken(process.env.DISCORD_TOKEN);
 
 console.log(commands)
 console.log('comecou a cadastrar');
-rest.put( Routes.applicationGuildCommands(process.env.CLIENT_ID, guild), { body: commands }
-)
-.then(() => console.log( 'instalou os comandos'))
-.catch((e) => console.log('e:', e))
+
+(async () => {
+    await rest.put( Routes.applicationGuildCommands(process.env.CLIENT_ID, guild), { body: commands })
+    // .then(() => console.log( 'instalou os comandos'))
+    // .catch((e) => console.log('e:', e))
+})()

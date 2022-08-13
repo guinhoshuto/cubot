@@ -5,13 +5,15 @@ const teste = require('./teste')
 const tiro = require('./tiro')
 const hora = require('./hora')
 const copypasta = require('./copypasta')
+const fala = require('./fala')
 
 module.exports = [
     cu,
     mood,
     guz,
     tiro,
-    // copypasta
+    // copypasta,
+    fala,
     hora,
     teste, 
 ]
