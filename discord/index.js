@@ -4,6 +4,7 @@ const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnec
 const path = require('path');
 const axios = require('axios')
 const { ApplicationCommandPermissionType } = require('discord-api-types/v9');
+require('dotenv').config()
 
 const cubot = new Client({
   intents: [
@@ -39,7 +40,7 @@ const handleDiscordInteraction = async (interaction) =>{
 			const options = {
 				method: 'POST',
 				url:  'https://voicerss-text-to-speech.p.rapidapi.com/',
-				params: { key: 'ca983b302beb45e895e2194c74123b72' },
+				params: { key: process.env.TTS_KEY },
 				headers: {
 					'content-type': 'application/x-www-form-urlencoded',
 					'X-RapidAPI-Key': '3242aadc71mshf88746437fb745ep1e39c8jsna36a6369186f',
