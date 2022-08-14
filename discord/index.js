@@ -28,7 +28,6 @@ const handleDiscordInteraction = async (interaction) =>{
     if(!interaction.isCommand()) return;
     switch(interaction.commandName){
 		case 'fala':
-			console.log(interaction)
 			const encodedParams = new URLSearchParams();
 			encodedParams.append("f", "16khz_16bit_stereo")
 			encodedParams.append("c", "mp3")
@@ -43,14 +42,14 @@ const handleDiscordInteraction = async (interaction) =>{
 				params: { key: process.env.TTS_KEY },
 				headers: {
 					'content-type': 'application/x-www-form-urlencoded',
-					'X-RapidAPI-Key': '3242aadc71mshf88746437fb745ep1e39c8jsna36a6369186f',
+					'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
 					'X-RapidAPI-Host': 'voicerss-text-to-speech.p.rapidapi.com'
 				},
 				data: encodedParams
 			}
 			axios.request(options)
 			.then(response => {
-				// console.log(response.data)
+				console.log(response.data)
 				const player = createAudioPlayer();
 				const resource = createAudioResource(response.data, {inlineVolume: true});
 				// resource.volume.setVolume(0.9);
