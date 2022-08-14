@@ -58,7 +58,7 @@ const handleMessages = async (channel, tags, message, self) => {
     message = message.toLowerCase();
     const words = message.split(" ");
     console.log(words.at(-4))
-    if(channelName === 'guzcalp'){
+    if(channelName === 'guzcalp' || channelName === 'guinhoshuto'){
         console.log(words)
         if(words[0] === '!preceito' || words[0] === '!preceitos'){
             const preceitos = await axios.get(`http://feras-leaderboards.herokuapp.com/cubot/preceitos/${words[1] !== undefined ? words[1] : ''}`)
