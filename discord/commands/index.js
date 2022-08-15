@@ -4,6 +4,7 @@ const mood = require('./mood')
 const teste = require('./teste')
 const tiro = require('./tiro')
 const hora = require('./hora')
+const raids = require('./raids')
 const copypasta = require('./copypasta')
 const fala = require('./fala')
 
@@ -12,6 +13,7 @@ module.exports = [
     mood,
     guz,
     tiro,
+    raids,
     // copypasta,
     fala,
     hora,
