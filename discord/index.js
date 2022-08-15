@@ -29,7 +29,7 @@ const handleDiscordInteraction = async (interaction) =>{
     switch(interaction.commandName){
 		case 'fala':
 			const encodedParams = new URLSearchParams();
-			encodedParams.append("f", "16khz_16bit_stereo")
+			encodedParams.append("f", "16khz_16bit_mono")
 			encodedParams.append("c", "mp3")
 			encodedParams.append("r", "0")
 			encodedParams.append("b64", true)
@@ -52,7 +52,7 @@ const handleDiscordInteraction = async (interaction) =>{
 				console.log(response.data)
 				const player = createAudioPlayer();
 				const resource = createAudioResource(response.data, {inlineVolume: true});
-				// resource.volume.setVolume(0.9);
+				resource.volume.setVolume(1);
 				const connection = joinVoiceChannel({
 					channelId: interaction.channelId,
 					guildId: interaction.guildId,
@@ -65,7 +65,7 @@ const handleDiscordInteraction = async (interaction) =>{
 					connection.destroy();
 				});
 			})
-			.catch(e => console.log(e))
+			.catch(e => console.log('error: ', e))
 
 			await interaction.reply({content: 'hm', ephemeral: true})
 			break;

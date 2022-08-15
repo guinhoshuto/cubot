@@ -68,8 +68,6 @@ const handleMessages = async (channel, tags, message, self) => {
         }
         switch(message){
             case '!cornos':
-                cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
-                break;
             case '!corno':
                 cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
                 break;
