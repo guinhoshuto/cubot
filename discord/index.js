@@ -88,7 +88,7 @@ const handleDiscordInteraction = async (interaction) =>{
 				await interaction.reply({content: 'porra, não fode', ephemeral: true});
 				break;
 			}
-			const msg = await axios.get(`https://feras-leaderboards.herokuapp.com/guzclap/genio/${nome}`)
+			const msg = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/genio/${nome}`)
             await interaction.reply(msg.data.msg);
             break;
         case 'cu':
