@@ -7,6 +7,7 @@ const hora = require('./hora')
 const raids = require('./raids')
 const copypasta = require('./copypasta')
 const fala = require('./fala')
+const genio = require('./genio')
 
 module.exports = [
     cu,
@@ -14,6 +15,7 @@ module.exports = [
     guz,
     tiro,
     raids,
+    genio,
     // copypasta,
     fala,
     hora,

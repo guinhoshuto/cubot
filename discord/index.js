@@ -82,6 +82,15 @@ const handleDiscordInteraction = async (interaction) =>{
 
 			await cubot.channels.cache.get(interaction.channelId).send({embeds: [wish]});
 			break;
+		case 'genio':
+            const nome = interaction.options.getString('nome');
+			if (nome.length === 1){
+				await interaction.reply({content: 'porra, não fode', ephemeral: true});
+				break;
+			}
+			const msg = await axios.get(`https://feras-leaderboards.herokuapp.com/guzclap/genio/${nome}`)
+            await interaction.reply(msg);
+            break;
         case 'cu':
             await interaction.reply("@cali#5795");
             break;
