@@ -89,7 +89,7 @@ const handleDiscordInteraction = async (interaction) =>{
 				break;
 			}
 			const msg = await axios.get(`https://feras-leaderboards.herokuapp.com/guzclap/genio/${nome}`)
-            await interaction.reply(msg);
+            await interaction.reply(msg.data.msg);
             break;
         case 'cu':
             await interaction.reply("@cali#5795");
