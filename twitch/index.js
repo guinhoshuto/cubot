@@ -71,6 +71,10 @@ const handleMessages = async (channel, tags, message, self) => {
             case '!corno':
                 cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
                 break;
+            case '!ciao':
+                const ciao = ['oi', 'tchau']
+                client.say(channel, `@${tags.username} ${ciao[Math.floor(Math.random()*2)]}`)
+                break;
             case '!kappaju':
                 console.log(message);
                 axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
