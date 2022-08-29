@@ -88,6 +88,19 @@ const handleMessages = async (channel, tags, message, self) => {
                     client.say(channel, `eu não sei o(╥﹏╥)o`)
                 });
                 break;
+            case '!kappamesju':
+                console.log(message);
+                axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappaMes")
+                .then(kappa => {
+                    let msg = 'Lista de ganhadores do slots (geral): ';
+                    kappa.data.forEach(u => msg += `${u.username}: (${u.kappa}x) |`)
+                    client.say(channel, msg);
+                })
+                .catch((e) => {
+                    console.log(e)
+                    client.say(channel, `eu não sei o(╥﹏╥)o`)
+                });
+                break;
             case '!rachadinha':
                 const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
                 console.log(userPoints.data)
