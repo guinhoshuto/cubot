@@ -92,7 +92,7 @@ const handleMessages = async (channel, tags, message, self) => {
                 console.log(message);
                 axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappaMes")
                 .then(kappa => {
-                    let msg = 'Lista de ganhadores do slots (geral): ';
+                    let msg = 'Lista de ganhadores do slots (mês): ';
                     kappa.data.forEach(u => msg += `${u.username}: (${u.kappaMes}x) |`)
                     client.say(channel, msg);
                 })
