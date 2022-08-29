@@ -133,7 +133,7 @@ const handleMessages = async (channel, tags, message, self) => {
             if(words.at(-4) === 'ganhou'){
                 console.log(message)
                 console.log(words[12])
-                await atualizaStats(channel, 'kappa', words[0]);
+                await atualizaStats(channel, 'kappas', words[0]);
                 axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
                 .then(kappa => {
                     let msg = 'Lista de ganhadores do slots (geral): ';
