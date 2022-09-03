@@ -35,7 +35,7 @@ app.get('/horario-oficial', async (req, res) => {
     const resource = await createAudioResource(createReadStream(file), {inlineVolume: true});
     resource.volume.setVolume(0.9);
     const connection = joinVoiceChannel({
-        channelId: '855694949151801354',
+        channelId: '997653231398297623',
         guildId: '855694948707991593',
         selfDeaf: false,
         adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
@@ -47,3 +47,5 @@ app.get('/horario-oficial', async (req, res) => {
     });
     res.json({'message': 'foi'})
 })
+
+// 997653231398297623
