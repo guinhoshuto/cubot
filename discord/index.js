@@ -27,6 +27,33 @@ const handleDiscordInteraction = async (interaction) =>{
 	const horarioOficial = ('0'+now.substring(0,2)).slice(-2) + '00'; 
     if(!interaction.isCommand()) return;
     switch(interaction.commandName){
+		case 'corvo':
+			console.log(interaction.channelId)
+			console.log(cubot.channels.cache.get(interaction.channelId).type);
+			switch(cubot.channels.cache.get(interaction.channelId).type){
+				case 'GUILD_VOICE':
+					const player = createAudioPlayer();
+					const file = path.join(__dirname, 'sounds', 'corvo.mp3')
+					const resource = await createAudioResource(createReadStream(file));
+					const connection = joinVoiceChannel({
+						channelId: interaction.channelId,
+						guildId: '855694948707991593',
+						selfDeaf: false,
+						adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
+					})
+					connection.subscribe(player)
+					player.play(resource)
+					player.on(AudioPlayerStatus.Idle, () => {
+						connection.destroy();
+					});
+					console.log(resource)
+					await interaction.reply({content: 'ababababa', ephemeral: true})
+					break;
+				case 'GUILD_TEXT':
+					await interaction.reply({files: [path.join(__dirname, 'sounds', 'corvo.mp3')]})	
+					break;
+			}
+			break;
 		case 'fala':
 			const encodedParams = new URLSearchParams();
 			encodedParams.append("f", "16khz_16bit_mono")
@@ -121,6 +148,7 @@ const handleDiscordInteraction = async (interaction) =>{
 			});
 			console.log(resource)
 			await interaction.reply({content: 'hm', ephemeral: true })
+			break;
     }
 }
 
