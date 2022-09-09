@@ -42,7 +42,7 @@ const atualizaStats = async (channel, att, member) => {
 
 const handleMessages = async (channel, tags, message, self) => {
     const channelName = channel.substring(1)
-    console.log(channel);
+    console.log(message);
     // try{
     //     conn.query(`INSERT INTO logs (name, payload_data) VALUES ('twitch', '{
     //         "channel": "${channelName}", 
@@ -69,7 +69,7 @@ const handleMessages = async (channel, tags, message, self) => {
         switch(message){
             case '!cornos':
             case '!corno':
-                cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz')
+                cubot.channels.cache.get('855695828856864799').send('Chamando todos os cornos lá na live do guz https://twitch.com/guzcalp')
                 break;
             case '!ciao':
                 const ciao = ['oi', 'tchau']
