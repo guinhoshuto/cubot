@@ -18,7 +18,7 @@ module.exports = [
     raids,
     genio,
     corvo,
-    // copypasta,
+    copypasta,
     fala,
     hora,
     teste, 
