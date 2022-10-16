@@ -1,6 +1,6 @@
-const juliette = require('./twitch')
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus  } = require('@discordjs/voice');
-const { cubot, handleDiscordInteraction} = require('./discord')
+const juliette = require('./twitch/juliette')
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { cubot, handleDiscordInteraction } = require('./discord')
 const path = require('path');
 const { createReadStream } = require('node:fs');
 const express = require('express')
@@ -17,22 +17,22 @@ cubot.on('ready', () => {
 });
 
 cubot.login(process.env.DISCORD_TOKEN)
-.then(() => console.log('ok'))
-.catch((e) => console.log('e:', e))
+    .then(() => console.log('ok'))
+    .catch((e) => console.log('e:', e))
 
 cubot.on('interactionCreate', handleDiscordInteraction)
 
 app.get('/', async (req, res) => {
-    res.json({'msg': 'oi, pois não?'})
+    res.json({ 'msg': 'oi, pois não?' })
 })
 
 app.get('/horario-oficial', async (req, res) => {
     console.log('horario acionado')
-	const now = new Date().toLocaleTimeString('pt-BR', {timeZone: 'America/Sao_Paulo'})
-	const horarioOficial = ('0'+now.substring(0,2)).slice(-2) + '00'; 
+    const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+    const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
     const player = createAudioPlayer();
     const file = path.join(__dirname, 'discord', 'horarios', horarioOficial + '.mp3')
-    const resource = await createAudioResource(createReadStream(file), {inlineVolume: true});
+    const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
     resource.volume.setVolume(0.9);
     const connection = joinVoiceChannel({
         channelId: '997653231398297623',
@@ -45,7 +45,7 @@ app.get('/horario-oficial', async (req, res) => {
     player.on(AudioPlayerStatus.Idle, () => {
         connection.destroy();
     });
-    res.json({'message': 'foi'})
+    res.json({ 'message': 'foi' })
 })
 
 // 997653231398297623
