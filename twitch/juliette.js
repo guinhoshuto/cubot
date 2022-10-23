@@ -3,8 +3,12 @@ const tmi = require('tmi.js');
 const utils = require('./utils');
 const axios = require('axios');
 // const { conn } = require('../db')
-const { geralChannel, cubot } = require('../discord')
+const { cubot } = require('../discord')
+
+const Kappa = require('./services/kappa')
 require('dotenv').config();
+
+const kappa = new Kappa();
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY
@@ -18,23 +22,19 @@ const client = new tmi.Client({
         username: 'juliette_freire_bot',
         password: process.env.TWITCH_OAUTH
     },
-    channels: ['marcellus_v', 'guzcalp', 'guinhoshuto', 'u________u']
+    channels: ['marcellus_v', 'guzcalp', 'guinhoshuto']
 });
 
-function addSlashes(str) {
-    return (str + '').replace(/[\\"']/g, '').replace(/\u0000/g, '');
-}
-
-const atualizaStats = async (channel, att, member) => {
-    const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${utils.tiraArroba(member)}/1`;
-    console.log(guzEndpoint)
-    try {
-        await axios.put(guzEndpoint)
-    } catch (e) {
-        client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
-        console.log('e', e);
-    }
-}
+// const atualizaStats = async (channel, att, member) => {
+//     const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${utils.tiraArroba(member)}/1`;
+//     console.log(guzEndpoint)
+//     try {
+//         await axios.put(guzEndpoint)
+//     } catch (e) {
+//         client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
+//         console.log('e', e);
+//     }
+// }
 
 const handleMessages = async (channel, tags, message, self) => {
     const channelName = channel.substring(1)
@@ -50,10 +50,8 @@ const handleMessages = async (channel, tags, message, self) => {
     //     console.log(e)
     // }
     if (self) return;
-    // console.log(cubot.channels.cache.get('855695828856864799'))
     message = message.toLowerCase();
     const words = message.split(" ");
-    console.log(words.at(-4))
     if (channelName === 'guzcalp' || channelName === 'guinhoshuto' || channelName === 'u________u') {
         console.log(words)
         if (words[0] === '!preceito' || words[0] === '!preceitos') {
@@ -71,30 +69,12 @@ const handleMessages = async (channel, tags, message, self) => {
                 client.say(channel, `@${tags.username} ${ciao[Math.floor(Math.random() * 2)]}`)
                 break;
             case '!kappaju':
-                console.log(message);
-                axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappa")
-                    .then(kappa => {
-                        let msg = 'Lista de ganhadores do slots (geral): ';
-                        kappa.data.forEach(u => msg += `${u.username}: (${u.kappa}x) |`)
-                        client.say(channel, msg);
-                    })
-                    .catch((e) => {
-                        console.log(e)
-                        client.say(channel, `eu não sei o(╥﹏╥)o`)
-                    });
+                const kappaGeral = await kappa.getKappa();
+                client.say(channel, kappaGeral);
                 break;
             case '!kappamesju':
-                console.log(message);
-                axios.get("http://feras-leaderboards.herokuapp.com/guzclap/twitch/kappaMes")
-                    .then(kappa => {
-                        let msg = 'Lista de ganhadores do slots (mês): ';
-                        kappa.data.forEach(u => msg += `${u.username}: (${u.kappaMes}x) |`)
-                        client.say(channel, msg);
-                    })
-                    .catch((e) => {
-                        console.log(e)
-                        client.say(channel, `eu não sei o(╥﹏╥)o`)
-                    });
+                const kappaMes = await kappa.getKappaMes();
+                client.say(channel, kappaMes)
                 break;
             case '!rachadinha':
                 const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
