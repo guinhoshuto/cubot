@@ -25,17 +25,6 @@ const client = new tmi.Client({
     channels: ['marcellus_v', 'guzcalp', 'guinhoshuto']
 });
 
-// const atualizaStats = async (channel, att, member) => {
-//     const guzEndpoint = `https://feras-leaderboards.herokuapp.com/guzclap/twitch/${att}/${utils.tiraArroba(member)}/1`;
-//     console.log(guzEndpoint)
-//     try {
-//         await axios.put(guzEndpoint)
-//     } catch (e) {
-//         client.say(channel, "vc não manda em mim (mentira, deu algum ruim aqui)");
-//         console.log('e', e);
-//     }
-// }
-
 const handleMessages = async (channel, tags, message, self) => {
     const channelName = channel.substring(1)
     console.log(message);
@@ -77,28 +66,8 @@ const handleMessages = async (channel, tags, message, self) => {
                 client.say(channel, kappaMes)
                 break;
             case '!rachadinha':
-                const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${tags.username}`);
-                console.log(userPoints.data)
-
-                const dividaJu = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/${utils.tiraArroba(tags.username)}`)
-                console.log(dividaJu.data)
-
-                if (parseInt(dividaJu.data[0].dividaJu) < 10000) {
-                    if (Object.keys(userPoints.data).length === 0 || userPoints.data.user.points < 2000) {
-                        axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${utils.tiraArroba(tags.username)}/1000`)
-                            .then(() => {
-                                client.say(channel, `!givepoints @${tags.username} 1000`)
-                            })
-                            .catch((e) => {
-                                client.say(channel, `@${tags.username} a casa caiu`)
-                                console.log(e)
-                            })
-                    } else {
-                        client.say(channel, 'corrupção não é bagunça!')
-                    }
-                } else {
-                    client.say(channel, `@${tags.username} já te dei mais de ${dividaJu.data[0].dividaJu} ponguz. Quem quer rir tem que fazer rir.`)
-                }
+                const dividaResponse = await kappa.rachadinha(channelName, tags.username);
+                client.say(channel, dividaResponse)
                 break;
         }
         if (tags.mod || tags.username === 'guzcalp') {

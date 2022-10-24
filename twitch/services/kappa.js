@@ -16,6 +16,14 @@ module.exports = class Kappa{
         }
     }
 
+    async addKappa(member){
+
+    }
+
+    async addFirst(member){
+
+    }
+
     async getKappa(){
         try{
             const kappa = await axios.get(`${this.endpoint}/kappa`)
@@ -41,16 +49,38 @@ module.exports = class Kappa{
 
     }
 
-    async rachadinha(){
+    async rachadinha(channelName, username){
+        const userPoints = await this.getUserPoints(channelName, username);
+        const dividaJu = await this.getDivida(username);
+        console.log(userPoints)
 
+        if (dividaJu < 10000) {
+            if (Object.keys(userPoints).length === 0 || userPoints.user.points < 2000) {
+                axios.put(`http://feras-leaderboards.herokuapp.com/guzclap/twitch/dividaJu/${utils.tiraArroba(username)}/1000`)
+                .then(() => {
+                    return `!givepoints @${username} 1000`;
+                })
+                .catch((e) => {
+                    console.log(e)
+                    return `@${username} a casa caiu`;
+                })
+            } else {
+                return 'corrupção não é bagunça!'
+            }
+        } else {
+            return `@${username} já te dei mais de ${dividaJu} ponguz. Quem quer rir tem que fazer rir.`;
+        }
     }
 
-    async addKappa(member){
-
+    async getUserPoints(channelName, username){
+        const userPoints = await axios.get(`http://feras-leaderboards.herokuapp.com/find/${channelName}/${username}`);
+        return userPoints.data;
     }
 
-    async addFirst(member){
-
+    async getDivida(username){
+        const dividaJu = await axios.get(`${this.endpoint}/${utils.tiraArroba(username)}`)
+        return parseInt(dividaJu.data[0].dividaJu);
     }
+
 
 }
