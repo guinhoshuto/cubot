@@ -47,7 +47,7 @@ const handleDiscordInteraction = async (interaction) => {
 			switch (cubot.channels.cache.get(interaction.channelId).type) {
 				case 'GUILD_VOICE':
 					const player = createAudioPlayer();
-					const file = path.join(__dirname, 'sounds', 'corvo.mp3')
+					const file = path.join(__dirname, 'src/sounds', 'corvo.mp3')
 					const resource = await createAudioResource(createReadStream(file));
 					const connection = joinVoiceChannel({
 						channelId: interaction.channelId,
@@ -111,8 +111,7 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'hora':
-			console.log(horarioOficial)
-			await interaction.reply({ files: [path.join(__dirname, 'horarios', horarioOficial + '.mp3')], ephemeral: true })
+			await interaction.reply({ files: [path.join(__dirname, 'src/horarios', horarioOficial + '.mp3')], ephemeral: true })
 			break;
 		case 'tiro':
 			console.log(interaction.channelId)

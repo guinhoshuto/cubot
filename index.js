@@ -31,7 +31,7 @@ app.get('/horario-oficial', async (req, res) => {
     const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
     const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
     const player = createAudioPlayer();
-    const file = path.join(__dirname, 'discord', 'horarios', horarioOficial + '.mp3')
+    const file = path.join(__dirname, 'discord/src/horarios', horarioOficial + '.mp3')
     const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
     resource.volume.setVolume(0.9);
     const connection = joinVoiceChannel({

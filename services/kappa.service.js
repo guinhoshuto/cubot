@@ -1,4 +1,4 @@
-const utils = require('../utils')
+const utils = require('../twitch/utils')
 const axios = require('axios')
 
 module.exports = class Kappa{
@@ -46,7 +46,6 @@ module.exports = class Kappa{
             console.log(e)
             return `eu não sei o(╥﹏╥)o`;
         };
-
     }
 
     async rachadinha(channelName, username){

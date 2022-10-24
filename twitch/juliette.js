@@ -5,7 +5,7 @@ const axios = require('axios');
 // const { conn } = require('../db')
 const { cubot } = require('../discord')
 
-const Kappa = require('./services/kappa')
+const Kappa = require('../services/kappa.service')
 require('dotenv').config();
 
 const kappa = new Kappa();
