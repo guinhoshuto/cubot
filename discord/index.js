@@ -3,7 +3,8 @@ const { createReadStream } = require('node:fs');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
 const CopypastaService = require('../services/copypasta.service')
 const path = require('path');
-const axios = require('axios')
+const axios = require('axios');
+const AudioChannel = require('./audioChannel');
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
@@ -143,23 +144,9 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply("clap");
 			break;
 		case 'teste':
-			const player = createAudioPlayer();
-			// const file = path.join(__dirname, 'nanohakase.mp4')
-			const file = path.join(__dirname, 'horarios', horarioOficial + '.mp3')
-			const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
-			resource.volume.setVolume(0.9);
-			const connection = joinVoiceChannel({
-				channelId: '855694949151801354',
-				guildId: '855694948707991593',
-				selfDeaf: false,
-				adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-			})
-			connection.subscribe(player)
-			player.play(resource)
-			player.on(AudioPlayerStatus.Idle, () => {
-				connection.destroy();
-			});
-			console.log(resource)
+			const file = path.join(__dirname, 'src/horarios', horarioOficial + '.mp3')
+			const testeConnection = new AudioChannel(cubot, interaction.channelId);
+			testeConnection.playAudio(file)
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 	}
