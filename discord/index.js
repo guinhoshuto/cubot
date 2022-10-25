@@ -1,5 +1,6 @@
-const { Client, Intents, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
 const { createReadStream } = require('node:fs');
+
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
 const CopypastaService = require('../services/copypasta.service')
 const path = require('path');
@@ -20,12 +21,12 @@ const cubot = new Client({
 
 const geralChannel = cubot.channels.cache.get('855695828856864799');
 
-async function probeAndCreateResource(readableStream) {
-	const { stream, type } = await demuxProbe(readableStream);
-	return createAudioResource(stream, { inputType: type });
-}
-
 const handleDiscordInteraction = async (interaction) => {
+	if(interaction.isButton()){
+		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
+		const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
+		buttomConnection.playAudio(buttomFile)
+	}
 	const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
 	const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
 	if (!interaction.isCommand()) return;
@@ -35,7 +36,7 @@ const handleDiscordInteraction = async (interaction) => {
 			if (copypastaPrompt === '?') {
 				const copypastaList = await copypasta.getCopypastas()
 				console.log(copypastaList)
-				const copypastaMenu = "\`\`\`" + `Lista de copypastas \n ${copypastaList.map((c, i) => i != 0 ? c[0] + "\n" : '\n').join('')}` + "\`\`\`"
+				const copypastaMenu = "```" + `Lista de copypastas \n ${copypastaList.map((c, i) => i != 0 ? c[0] + "\n" : '\n').join('')}` + "```"
 				await interaction.reply({ content: copypastaMenu, ephemeral: true })
 			} else {
 				const copypastaRequested = await copypasta.getCopypasta(copypastaPrompt)
@@ -43,26 +44,11 @@ const handleDiscordInteraction = async (interaction) => {
 			}
 			break;
 		case 'corvo':
-			console.log(interaction.channelId)
-			console.log(cubot.channels.cache.get(interaction.channelId).type);
 			switch (cubot.channels.cache.get(interaction.channelId).type) {
 				case 'GUILD_VOICE':
-					const player = createAudioPlayer();
-					const file = path.join(__dirname, 'src/sounds', 'corvo.mp3')
-					const resource = await createAudioResource(createReadStream(file));
-					const connection = joinVoiceChannel({
-						channelId: interaction.channelId,
-						guildId: '855694948707991593',
-						selfDeaf: false,
-						adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-					})
-					connection.subscribe(player)
-					player.play(resource)
-					player.on(AudioPlayerStatus.Idle, () => {
-						connection.destroy();
-					});
-					console.log(resource)
-					await interaction.reply({ content: 'ababababa', ephemeral: true })
+					const corvoFile = path.join(__dirname, 'src/sounds/corvo.mp3')
+					const corvoConnection = new AudioChannel(cubot, interaction.channelId);
+					corvoConnection.playAudio(corvoFile)
 					break;
 				case 'GUILD_TEXT':
 					await interaction.reply({ files: [path.join(__dirname, 'sounds', 'corvo.mp3')] })
@@ -143,6 +129,35 @@ const handleDiscordInteraction = async (interaction) => {
 		case 'guz':
 			await interaction.reply("clap");
 			break;
+		case 'instants':
+			const row = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+						.setCustomId('corvo')
+						.setLabel('Corvo')
+						.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+						.setCustomId('tistreza')
+						.setLabel('Tistreza')
+						.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+						.setCustomId('rapaz')
+						.setLabel('Rapaz')
+						.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+						.setCustomId('sair')
+						.setLabel('Sair')
+						.setStyle('DANGER'),
+				)
+			await interaction.reply({ content: 'Selecione um áudio', components: [row]})
+			break;
+
 		case 'teste':
 			const file = path.join(__dirname, 'src/horarios', horarioOficial + '.mp3')
 			const testeConnection = new AudioChannel(cubot, interaction.channelId);

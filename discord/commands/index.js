@@ -9,6 +9,7 @@ const copypasta = require('./copypasta')
 const fala = require('./fala')
 const corvo = require('./corvo')
 const genio = require('./genio')
+const instants = require('./instants')
 
 module.exports = [
     cu,
@@ -16,6 +17,7 @@ module.exports = [
     guz,
     tiro,
     raids,
+    instants,
     genio,
     corvo,
     copypasta,
