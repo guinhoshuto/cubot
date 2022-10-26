@@ -1,11 +1,12 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
 const { createReadStream } = require('node:fs');
 
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
-const CopypastaService = require('../services/copypasta.service')
+// const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
 const path = require('path');
 const axios = require('axios');
 const AudioChannel = require('./audioChannel');
+const discordTTS = require('../services/discordTTS.service');
+const CopypastaService = require('../services/copypasta.service')
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
@@ -24,7 +25,7 @@ const geralChannel = cubot.channels.cache.get('855695828856864799');
 const handleDiscordInteraction = async (interaction) => {
 	if(interaction.isButton()){
 		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
-		const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
+		const buttomFile = createReadStream(path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3'))
 		buttomConnection.playAudio(buttomFile)
 	}
 	const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
@@ -35,7 +36,6 @@ const handleDiscordInteraction = async (interaction) => {
 			const copypastaPrompt = interaction.options.getString('copypastas').toLowerCase().trim();
 			if (copypastaPrompt === '?') {
 				const copypastaList = await copypasta.getCopypastas()
-				console.log(copypastaList)
 				const copypastaMenu = "```" + `Lista de copypastas \n ${copypastaList.map((c, i) => i != 0 ? c[0] + "\n" : '\n').join('')}` + "```"
 				await interaction.reply({ content: copypastaMenu, ephemeral: true })
 			} else {
@@ -46,7 +46,7 @@ const handleDiscordInteraction = async (interaction) => {
 		case 'corvo':
 			switch (cubot.channels.cache.get(interaction.channelId).type) {
 				case 'GUILD_VOICE':
-					const corvoFile = path.join(__dirname, 'src/sounds/corvo.mp3')
+					const corvoFile = createReadStream(path.join(__dirname, 'src/sounds/corvo.mp3'))
 					const corvoConnection = new AudioChannel(cubot, interaction.channelId);
 					corvoConnection.playAudio(corvoFile)
 					break;
@@ -56,45 +56,9 @@ const handleDiscordInteraction = async (interaction) => {
 			}
 			break;
 		case 'fala':
-			const encodedParams = new URLSearchParams();
-			encodedParams.append("f", "16khz_16bit_mono")
-			encodedParams.append("c", "mp3")
-			encodedParams.append("r", "0")
-			encodedParams.append("b64", true)
-			encodedParams.append("v", interaction.options.getString('falantes'))
-			encodedParams.append("hl", "pt-br")
-			encodedParams.append("src", interaction.options.getString('texto'))
-			const options = {
-				method: 'POST',
-				url: 'https://voicerss-text-to-speech.p.rapidapi.com/',
-				params: { key: process.env.TTS_KEY },
-				headers: {
-					'content-type': 'application/x-www-form-urlencoded',
-					'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-					'X-RapidAPI-Host': 'voicerss-text-to-speech.p.rapidapi.com'
-				},
-				data: encodedParams
-			}
-			axios.request(options)
-				.then(response => {
-					console.log(response.data)
-					const player = createAudioPlayer();
-					const resource = createAudioResource(response.data, { inlineVolume: true });
-					resource.volume.setVolume(1);
-					const connection = joinVoiceChannel({
-						channelId: interaction.channelId,
-						guildId: interaction.guildId,
-						selfDeaf: false,
-						adapterCreator: cubot.guilds.cache.get(interaction.guildId).voiceAdapterCreator
-					})
-					connection.subscribe(player)
-					player.play(resource)
-					player.on(AudioPlayerStatus.Idle, () => {
-						connection.destroy();
-					});
-				})
-				.catch(e => console.log('error: ', e))
-
+			const falaConnection =  new AudioChannel(cubot, interaction.channelId)
+			const ttsInstance = new discordTTS();
+			ttsInstance.tts(interaction.options.getString('falantes'), interaction.options.getString('texto'), falaConnection)
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'hora':
@@ -159,7 +123,7 @@ const handleDiscordInteraction = async (interaction) => {
 			break;
 
 		case 'teste':
-			const file = path.join(__dirname, 'src/horarios', horarioOficial + '.mp3')
+			const file = createReadStream(path.join(__dirname, 'src/horarios', horarioOficial + '.mp3'))
 			const testeConnection = new AudioChannel(cubot, interaction.channelId);
 			testeConnection.playAudio(file)
 			await interaction.reply({ content: 'hm', ephemeral: true })

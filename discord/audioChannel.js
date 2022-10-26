@@ -1,6 +1,5 @@
-const { Client, Intents, MessageEmbed } = require('discord.js');
 const { createReadStream } = require('node:fs');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const guildId = '855694948707991593';
 
 module.exports = class AudioChannel{
@@ -15,19 +14,9 @@ module.exports = class AudioChannel{
         })
     }
 
-    // const player = createAudioPlayer();
-    // const file = path.join(__dirname, 'nanohakase.mp4')
-    // const file = path.join(__dirname, 'horarios', horarioOficial + '.mp3')
-    // const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
-    // resource.volume.setVolume(0.9);
-    // const connection = joinVoiceChannel({
-    //     channelId: '855694949151801354',
-    //     guildId: '855694948707991593',
-    //     selfDeaf: false,
-    //     adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-    // })
     async playAudio(file){
-        const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
+        const resource = await createAudioResource(file, { inlineVolume: true });
+        resource.volume.setVolume(1);
         this.connection.subscribe(this.player)
         this.player.play(resource)
         this.player.on(AudioPlayerStatus.Idle, () => {
