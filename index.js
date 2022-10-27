@@ -1,7 +1,8 @@
 const juliette = require('./twitch/juliette')
+const HorarioOficial = require('./services/horario.service')
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const { cubot, handleDiscordInteraction } = require('./discord')
-const path = require('path');
+// const path = require('path');
 const { createReadStream } = require('node:fs');
 const express = require('express')
 require('dotenv').config();
@@ -28,11 +29,12 @@ app.get('/', async (req, res) => {
 
 app.get('/horario-oficial', async (req, res) => {
     console.log('horario acionado')
-    const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
-    const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
+    const horarioOficial = new HorarioOficial()
+    // const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+    // const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
     const player = createAudioPlayer();
-    const file = path.join(__dirname, 'discord/src/horarios', horarioOficial + '.mp3')
-    const resource = await createAudioResource(createReadStream(file), { inlineVolume: true });
+    // const file = path.join(__dirname, 'discord/src/horarios', horarioOficial + '.mp3')
+    const resource = await createAudioResource(createReadStream(horarioOficial.horarioOficialFile()), { inlineVolume: true });
     resource.volume.setVolume(0.9);
     const connection = joinVoiceChannel({
         channelId: '997653231398297623',
