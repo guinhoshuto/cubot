@@ -1,5 +1,6 @@
 const juliette = require('./twitch/juliette')
 const HorarioOficial = require('./services/horario.service')
+const audioChannel = require('./discord/audioChannel')
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const { cubot, handleDiscordInteraction } = require('./discord')
 // const path = require('path');
@@ -32,22 +33,24 @@ app.get('/horario-oficial', async (req, res) => {
     const horarioOficial = new HorarioOficial()
     // const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
     // const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
-    const player = createAudioPlayer();
-    // const file = path.join(__dirname, 'discord/src/horarios', horarioOficial + '.mp3')
-    const resource = await createAudioResource(createReadStream(horarioOficial.horarioOficialFile()), { inlineVolume: true });
-    resource.volume.setVolume(0.9);
-    const connection = joinVoiceChannel({
-        channelId: '997653231398297623',
-        guildId: '855694948707991593',
-        selfDeaf: false,
-        adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
-    })
-    connection.subscribe(player)
-    player.play(resource)
-    player.on(AudioPlayerStatus.Idle, () => {
-        connection.destroy();
-    });
-    res.json({ 'message': 'foi' })
+    const horarioConnection = audioChannel(cubot, '997653231398297623')
+    horarioConnection.playAudio(horarioOficial.horarioOficialFile())
+    // const player = createAudioPlayer();
+    // // const file = path.join(__dirname, 'discord/src/horarios', horarioOficial + '.mp3')
+    // const resource = await createAudioResource(createReadStream(horarioOficial.horarioOficialFile()), { inlineVolume: true });
+    // resource.volume.setVolume(0.9);
+    // const connection = joinVoiceChannel({
+    //     channelId: '997653231398297623',
+    //     guildId: '855694948707991593',
+    //     selfDeaf: false,
+    //     adapterCreator: cubot.guilds.cache.get('855694948707991593').voiceAdapterCreator
+    // })
+    // connection.subscribe(player)
+    // player.play(resource)
+    // player.on(AudioPlayerStatus.Idle, () => {
+    //     connection.destroy();
+    // });
+    // res.json({ 'message': 'foi' })
 })
 
 // 997653231398297623
