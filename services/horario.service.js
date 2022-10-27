@@ -9,7 +9,8 @@ module.exports = class Horarios{
     }
 
     horarioOficialFile(){
-        return path.join('../discord/src/horarios',  + '.mp3')
+        console.log( path.join('../discord/src/horarios', this.horarioOficial() + '.mp3') )
+        return path.join('../discord/src/horarios', this.horarioOficial() + '.mp3')
     }
 
 }
