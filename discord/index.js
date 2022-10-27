@@ -7,6 +7,7 @@ const axios = require('axios');
 const AudioChannel = require('./audioChannel');
 const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
+const HorarioOficial = require('../services/horario.service')
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
@@ -23,13 +24,12 @@ const cubot = new Client({
 const geralChannel = cubot.channels.cache.get('855695828856864799');
 
 const handleDiscordInteraction = async (interaction) => {
+	const horarioOficial = new HorarioOficial()
 	if(interaction.isButton()){
 		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
 		const buttomFile = createReadStream(path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3'))
 		buttomConnection.playAudio(buttomFile)
 	}
-	const now = new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' })
-	const horarioOficial = ('0' + now.substring(0, 2)).slice(-2) + '00';
 	if (!interaction.isCommand()) return;
 	switch (interaction.commandName) {
 		case 'copypasta':
@@ -62,7 +62,7 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'hora':
-			await interaction.reply({ files: [path.join(__dirname, 'src/horarios', horarioOficial + '.mp3')], ephemeral: true })
+			await interaction.reply({ files: [path.join(__dirname, 'src/horarios', horarioOficial.horarioOficialFile() + '.mp3')], ephemeral: true })
 			break;
 		case 'tiro':
 			console.log(interaction.channelId)
@@ -123,9 +123,8 @@ const handleDiscordInteraction = async (interaction) => {
 			break;
 
 		case 'teste':
-			const file = createReadStream(path.join(__dirname, 'src/horarios', horarioOficial + '.mp3'))
 			const testeConnection = new AudioChannel(cubot, interaction.channelId);
-			testeConnection.playAudio(file)
+			testeConnection.playAudio(horarioOficial.horarioOficialFile())
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 	}
