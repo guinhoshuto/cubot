@@ -1,4 +1,5 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
+const wait = require('node:timers/promises').setTimeout;
 const { createReadStream } = require('node:fs');
 
 // const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
@@ -92,6 +93,27 @@ const handleDiscordInteraction = async (interaction) => {
 			break;
 		case 'guz':
 			await interaction.reply("clap");
+			break;
+		case 'vibing':
+			await interaction.reply("┌(・。・)┘♪");
+			await wait(500);
+			await interaction.editReply('└(・▽・)┐ ♪');
+			await wait(500);
+			await interaction.editReply("┌(・。・)┘♪");
+			await wait(500);
+			await interaction.editReply('└(・▽・)┐♪  ♪');
+			await wait(500);
+			await interaction.editReply("┌(・。・)┘♪");
+			await wait(500);
+			await interaction.editReply('└(・▽・)┐ ♪');
+			await wait(500);
+			await interaction.editReply("┌(・。・)┘♪");
+			await wait(500);
+			await interaction.editReply('└(・▽・)┐ ♪ ♪');
+			await wait(500);
+			await interaction.editReply('└(・▽・)┐ ♪');
+			await wait(500);
+			await interaction.deleteReply();
 			break;
 		case 'instants':
 			const row = new MessageActionRow()

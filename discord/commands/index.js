@@ -10,6 +10,7 @@ const fala = require('./fala')
 const corvo = require('./corvo')
 const genio = require('./genio')
 const instants = require('./instants')
+const vibing = require('./vibing')
 
 module.exports = [
     cu,
@@ -24,4 +25,5 @@ module.exports = [
     fala,
     hora,
     teste, 
+    vibing,
 ]
