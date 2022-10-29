@@ -1,10 +1,9 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
-const wait = require('node:timers/promises').setTimeout;
 const { createReadStream } = require('node:fs');
 
-// const { joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection, demuxProbe, AudioPlayerStatus } = require('@discordjs/voice');
 const path = require('path');
 const axios = require('axios');
+const utils = require('./utils');
 const AudioChannel = require('./audioChannel');
 const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
@@ -95,25 +94,18 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply("clap");
 			break;
 		case 'vibing':
-			await interaction.reply("┌(・。・)┘♪");
-			await wait(500);
-			await interaction.editReply('└(・▽・)┐ ♪');
-			await wait(500);
-			await interaction.editReply("┌(・。・)┘♪");
-			await wait(500);
-			await interaction.editReply('└(・▽・)┐♪  ♪');
-			await wait(500);
-			await interaction.editReply("┌(・。・)┘♪");
-			await wait(500);
-			await interaction.editReply('└(・▽・)┐ ♪');
-			await wait(500);
-			await interaction.editReply("┌(・。・)┘♪");
-			await wait(500);
-			await interaction.editReply('└(・▽・)┐ ♪ ♪');
-			await wait(500);
-			await interaction.editReply('└(・▽・)┐ ♪');
-			await wait(500);
-			await interaction.deleteReply();
+			const sequence = [
+				"┌(・。・)┘♪",
+				"└(・▽・)┐ ♪",
+				"┌(・。・)┘♪",
+				"└(・▽・)┐♪  ♪",
+				"┌(・。・)┘♪",
+				"└(・▽・)┐ ♪",
+				"┌(・。・)┘♪",
+				"└(・▽・)┐ ♪ ♪",
+				"└(・。・)┐ ♪"
+			];
+			await utils.animatedText(interaction, sequence, 500)
 			break;
 		case 'instants':
 			const row = new MessageActionRow()
