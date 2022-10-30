@@ -1,5 +1,5 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
-const { createReadStream } = require('node:fs');
+// const { createReadStream } = require('node:fs');
 
 const path = require('path');
 const axios = require('axios');
@@ -27,7 +27,7 @@ const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
 	if(interaction.isButton()){
 		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
-		const buttomFile = createReadStream(path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3'))
+		const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
 		buttomConnection.playAudio(buttomFile)
 	}
 	if (!interaction.isCommand()) return;
@@ -44,14 +44,14 @@ const handleDiscordInteraction = async (interaction) => {
 			}
 			break;
 		case 'corvo':
+			const corvoFile = path.join(__dirname, 'src/sounds/corvo.mp3');
 			switch (cubot.channels.cache.get(interaction.channelId).type) {
 				case 'GUILD_VOICE':
-					const corvoFile = createReadStream(path.join(__dirname, 'src/sounds/corvo.mp3'))
 					const corvoConnection = new AudioChannel(cubot, interaction.channelId);
 					corvoConnection.playAudio(corvoFile)
 					break;
 				case 'GUILD_TEXT':
-					await interaction.reply({ files: [path.join(__dirname, 'sounds', 'corvo.mp3')] })
+					await interaction.reply({ files: [corvoFile] })
 					break;
 			}
 			break;

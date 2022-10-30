@@ -30,7 +30,7 @@ app.get('/horario-oficial', async (req, res) => {
     const horarioOficial = new HorarioOficial()
     const horarioConnection = new audioChannel(cubot, '997653231398297623')
     horarioConnection.playAudio(horarioOficial.horarioOficialFile())
-    res.json({ 'message': 'foi' })
+    res.json({ 'message': horarioOficial.horarioOficial() })
 })
 
 // 997653231398297623

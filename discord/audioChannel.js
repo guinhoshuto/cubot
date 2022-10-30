@@ -15,7 +15,8 @@ module.exports = class AudioChannel{
     }
 
     async playAudio(file){
-        const resource = await createAudioResource(file, { inlineVolume: true });
+        const audio = createReadStream(file);
+        const resource = await createAudioResource(audio, { inlineVolume: true });
         resource.volume.setVolume(1);
         this.connection.subscribe(this.player)
         this.player.play(resource)
