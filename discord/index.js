@@ -5,12 +5,14 @@ const path = require('path');
 const axios = require('axios');
 const utils = require('./utils');
 const AudioChannel = require('./audioChannel');
+const TranslateService = require('../services/translate.service');
 const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
 const HorarioOficial = require('../services/horario.service')
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
+const translate = new TranslateService();
 
 const cubot = new Client({
 	intents: [
@@ -25,6 +27,12 @@ const geralChannel = cubot.channels.cache.get('855695828856864799');
 
 const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
+	if(interaction.isMessageContextMenu()){
+		const originalMessage = await cubot.channels.cache.get(interaction.channelId).messages.fetch(interaction.targetId)
+		let msg = await translate.translate(originalMessage.content, 'pt-br')
+		console.log(msg)
+		await interaction.reply({content: msg, ephemeral: false})
+	}
 	if(interaction.isSelectMenu()){
 		if(interaction.customId === 'copypasta'){
 			let msg = await copypasta.getCopypasta(interaction.values[0])

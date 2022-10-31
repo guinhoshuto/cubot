@@ -11,6 +11,7 @@ const corvo = require('./corvo')
 const genio = require('./genio')
 const instants = require('./instants')
 const vibing = require('./vibing')
+const taemingles = require('./taemingles')
 
 module.exports = [
     cu,
@@ -26,4 +27,5 @@ module.exports = [
     hora,
     teste, 
     vibing,
+    taemingles,
 ]
