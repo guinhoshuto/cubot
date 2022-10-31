@@ -1,14 +1,14 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const axios = require('axios');
+// const axios = require('axios');
 
 const data = new SlashCommandBuilder()
     .setName('copypasta')
     .setDescription('copia aí')
-    .addStringOption(option => 
-        option.setName('copypastas')
-            .setDescription('selecione uma copypasta ou digite ? para saber quais estão cadastradas')
-            .setRequired(true)
-        );
+    // .addStringOption(option => 
+    //     option.setName('copypastas')
+    //         .setDescription('selecione uma copypasta ou digite ? para saber quais estão cadastradas')
+    //         .setRequired(true)
+    //     );
 
 
 // const getCopypastas = async () => {

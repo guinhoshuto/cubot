@@ -6,10 +6,24 @@ module.exports = class CopypastaService {
     constructor() { }
 
     async getCopypastas() {
-        console.log(url)
         const copypastas = await axios.get(url)
-        // console.log(response.data.values)
         return copypastas.data.values
+    }
+
+    async getSelectCopypastas() {
+        const input = [];
+        const copypastas = await this.getCopypastas(); 
+        copypastas.forEach(copypasta => input.push(this.formatInput(copypasta)))
+        input.shift();
+        return input
+    }
+
+    formatInput(copypasta){
+        return ({
+            'label': copypasta[0], 
+            'description': `${copypasta[1].substring(0,40)}...`, 
+            'value': copypasta[0]
+        })
     }
 
     async getCopypasta(nome) {

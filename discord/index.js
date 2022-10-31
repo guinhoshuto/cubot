@@ -1,4 +1,4 @@
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton  } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 // const { createReadStream } = require('node:fs');
 
 const path = require('path');
@@ -25,6 +25,12 @@ const geralChannel = cubot.channels.cache.get('855695828856864799');
 
 const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
+	if(interaction.isSelectMenu()){
+		if(interaction.customId === 'copypasta'){
+			let msg = await copypasta.getCopypasta(interaction.values[0])
+			await interaction.update({ content: msg, ephemeral:true });	
+		}
+	}
 	if(interaction.isButton()){
 		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
 		const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
@@ -33,15 +39,15 @@ const handleDiscordInteraction = async (interaction) => {
 	if (!interaction.isCommand()) return;
 	switch (interaction.commandName) {
 		case 'copypasta':
-			const copypastaPrompt = interaction.options.getString('copypastas').toLowerCase().trim();
-			if (copypastaPrompt === '?') {
-				const copypastaList = await copypasta.getCopypastas()
-				const copypastaMenu = "```" + `Lista de copypastas \n ${copypastaList.map((c, i) => i != 0 ? c[0] + "\n" : '\n').join('')}` + "```"
-				await interaction.reply({ content: copypastaMenu, ephemeral: true })
-			} else {
-				const copypastaRequested = await copypasta.getCopypasta(copypastaPrompt)
-				await interaction.reply({ content: copypastaRequested, ephemeral: true })
-			}
+			const copypastas = await copypasta.getSelectCopypastas();
+			const copypastaSelect = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('copypasta')
+                        .setPlaceholder('Selecione')
+                        .addOptions(copypastas)
+				)
+			await interaction.reply({ content: 'Selecione uma Copypasta', ephemeral: true, components: [copypastaSelect] })
 			break;
 		case 'corvo':
 			const corvoFile = path.join(__dirname, 'src/sounds/corvo.mp3');
