@@ -12,6 +12,8 @@ const genio = require('./genio')
 const instants = require('./instants')
 const vibing = require('./vibing')
 const taemingles = require('./taemingles')
+const ifood = require('./ifood')
+const slots = require('./slots')
 
 module.exports = [
     cu,
@@ -28,4 +30,6 @@ module.exports = [
     teste, 
     vibing,
     taemingles,
+    ifood,
+    slots
 ]

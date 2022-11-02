@@ -22,7 +22,7 @@ const client = new tmi.Client({
         username: 'juliette_freire_bot',
         password: process.env.TWITCH_OAUTH
     },
-    channels: ['marcellus_v', 'guzcalp', 'guinhoshuto']
+    channels: ['marcellus_v', 'guzcalp', 'guinhoshuto', 'mazeeein']
 });
 
 const handleMessages = async (channel, tags, message, self) => {
