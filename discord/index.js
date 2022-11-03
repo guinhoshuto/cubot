@@ -8,7 +8,8 @@ const AudioChannel = require('./audioChannel');
 const TranslateService = require('../services/translate.service');
 const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
-const HorarioOficial = require('../services/horario.service')
+const HorarioOficial = require('../services/horario.service');
+const Slots = require('../services/slots.service');
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
@@ -24,6 +25,7 @@ const cubot = new Client({
 })
 
 const geralChannel = cubot.channels.cache.get('855695828856864799');
+const slotsService = new Slots();
 
 const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
@@ -119,7 +121,10 @@ const handleDiscordInteraction = async (interaction) => {
 				"└(・▽・)┐ ♪ ♪",
 				"└(・。・)┐ ♪"
 			];
-			await utils.animatedText(interaction, sequence, 500)
+			await utils.animatedText(interaction, sequence, 500, true)
+			break;
+		case 'slots': 
+			await slotsService.roll(interaction);
 			break;
 		case 'instants':
 			const row = new MessageActionRow()

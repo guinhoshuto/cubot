@@ -1,6 +1,6 @@
 const wait = require('node:timers/promises').setTimeout;
 
-async function animatedText(interaction, sequence, delay){
+async function animatedText(interaction, sequence, delay, erase){
     for(let i = 0; i < sequence.length; i++){
         if(i === 0){
 			await interaction.reply(sequence[i]);
@@ -9,7 +9,7 @@ async function animatedText(interaction, sequence, delay){
         }
         await wait(delay);
     }
-    await interaction.deleteReply();
+    if(erase) await interaction.deleteReply();
 }
 
 module.exports = { animatedText }
