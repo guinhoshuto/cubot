@@ -109,6 +109,19 @@ const handleDiscordInteraction = async (interaction) => {
 		case 'guz':
 			await interaction.reply("clap");
 			break;
+		case 'recalp':
+			const userId = interaction.user.id
+			console.log(interaction)
+			const recalpButton = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+						.setURL(`https://recalp.feras.club/?user_id=${userId}`)
+						.setLabel('RECALP')
+						.setStyle('LINK'),
+				)
+			await interaction.reply({ content: '2022', components: [recalpButton]})
+
+			break;
 		case 'vibing':
 			const sequence = [
 				"┌(・。・)┘♪",

@@ -14,6 +14,7 @@ const vibing = require('./vibing')
 const taemingles = require('./taemingles')
 const ifood = require('./ifood')
 const slots = require('./slots')
+const recalp = require('./recalp')
 
 module.exports = [
     cu,
@@ -25,6 +26,7 @@ module.exports = [
     genio,
     corvo,
     copypasta,
+    recalp,
     fala,
     hora,
     teste, 
