@@ -2,7 +2,7 @@ const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const utils = require('./utils');
 const axios = require('axios');
-// const { conn } = require('../db')
+const conn = require('../db')
 const { cubot } = require('../discord')
 
 const Kappa = require('../services/kappa.service')
@@ -10,10 +10,11 @@ require('dotenv').config();
 
 const kappa = new Kappa();
 
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY
-})
-const openai = new OpenAIApi(configuration)
+// const configuration = new Configuration({
+//     apiKey: process.env.OPENAI_API_KEY
+// })
+// const openai = new OpenAIApi(configuration)
+// conn.connect();
 
 const client = new tmi.Client({
     connection: { reconnect: true },
@@ -91,6 +92,17 @@ const handleMessages = async (channel, tags, message, self) => {
             }
         }
         if (tags.username === 'streamelements') {
+            if (words[0] === '@juliette_freire_bot,') {
+                console.log('entrou no salvar quote')
+                const numero = parseInt(words[1].substring(1, words[1].length - 1));
+                const quote = words.slice(2, -1)
+                try{
+                    conn.execute(`INSERT INTO quotes (numero, quote, canal) VALUES (${numero}, '${quote}', '${channelName}')`)
+                    .then(() => console.log('salvou quote ', numero))
+                } catch (e){
+                    console.log(e)
+                }
+            }
             if (words.at(-4) === 'ganhou') {
                 console.log(message)
                 console.log(words[12])
@@ -127,23 +139,23 @@ const handleMessages = async (channel, tags, message, self) => {
         }
     }
 
-    if (words[0] === '@juliette_freire_bot') {
-        const pergunta = message.substring(21);
-        console.log(pergunta)
-        openai.createCompletion({
-            model: 'text-davinci-002',
-            prompt: pergunta,
-            temperature: 0.7,
-            max_tokens: 100,
-        })
-            .then((response) => {
-                client.say(channel, response.data.choices[0].text)
-            })
-            .catch(e => {
-                console.log(e)
-                client.say(channel, `eu não sei o(╥﹏╥)o`)
-            })
-    }
+    // if (words[0] === '@juliette_freire_bot') {
+    //     const pergunta = message.substring(21);
+    //     console.log(pergunta)
+    //     openai.createCompletion({
+    //         model: 'text-davinci-002',
+    //         prompt: pergunta,
+    //         temperature: 0.7,
+    //         max_tokens: 100,
+    //     })
+    //         .then((response) => {
+    //             client.say(channel, response.data.choices[0].text)
+    //         })
+    //         .catch(e => {
+    //             console.log(e)
+    //             client.say(channel, `eu não sei o(╥﹏╥)o`)
+    //         })
+    // }
     switch (message) {
         case '!cuscuz':
             client.say(channel, `@${tags.username}, o cuscuz tá pronto!`)

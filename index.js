@@ -3,6 +3,7 @@ const HorarioOficial = require('./services/horario.service')
 const audioChannel = require('./discord/audioChannel')
 const { cubot, handleDiscordInteraction } = require('./discord')
 const express = require('express')
+const { GuildScheduledEventPrivacyLevel } = require('discord-api-types/v10')
 require('dotenv').config();
 
 const app = express();
@@ -24,6 +25,19 @@ cubot.on('interactionCreate', handleDiscordInteraction)
 app.get('/', async (req, res) => {
     res.json({ 'msg': 'oi, pois não?' })
 })
+
+app.get('/guzcalp/quotes', async(req, res) => {
+    let quote = 1
+    setInterval(() => {
+        try{ 
+            juliette.client.say('#guzcalp',`!quote ${quote}`)
+            console.log()
+        } catch (e) {
+            res.json({'e': e})
+        }
+        quote++
+    }, 15000)
+}) 
 
 app.get('/horario-oficial', async (req, res) => {
     console.log('horario acionado')
