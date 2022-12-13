@@ -2,13 +2,15 @@ const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const utils = require('./utils');
 const axios = require('axios');
-const conn = require('../db')
+// const conn = require('../db')
 const { cubot } = require('../discord')
+const mysql = require('mysql2/promise')
 
 const Kappa = require('../services/kappa.service')
 require('dotenv').config();
 
 const kappa = new Kappa();
+
 
 // const configuration = new Configuration({
 //     apiKey: process.env.OPENAI_API_KEY
@@ -93,11 +95,12 @@ const handleMessages = async (channel, tags, message, self) => {
         }
         if (tags.username === 'streamelements') {
             if (words[0] === '@juliette_freire_bot,') {
+                const conn = await mysql.createConnection(process.env.DATABASE_URL);
                 console.log('entrou no salvar quote')
                 const numero = parseInt(words[1].substring(1, words[1].length - 1));
-                const quote = words.slice(2, -1)
+                const quote = words.slice(2, words.length).join(' ')
                 try{
-                    conn.execute(`INSERT INTO quotes (numero, quote, canal) VALUES (${numero}, '${quote}', '${channelName}')`)
+                    conn.execute(`INSERT INTO quotes (numero, quote, canal) VALUES (${numero}, '${quote}' , "${channelName}")`)
                     .then(() => console.log('salvou quote ', numero))
                 } catch (e){
                     console.log(e)
