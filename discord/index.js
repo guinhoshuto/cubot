@@ -119,7 +119,7 @@ const handleDiscordInteraction = async (interaction) => {
 						.setLabel('RECALP')
 						.setStyle('LINK'),
 				)
-			await interaction.reply({ content: '2022', components: [recalpButton]})
+			await interaction.reply({ content: 'Esse é o seu recalp de 2022', ephemeral: true, components: [recalpButton]})
 
 			break;
 		case 'vibing':
