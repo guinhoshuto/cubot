@@ -95,7 +95,7 @@ const handleMessages = async (channel, tags, message, self) => {
         }
         if (tags.username === 'streamelements') {
             if (words[0] === '@juliette_freire_bot,') {
-                const conn = await mysql.createConnection(process.env.DATABASE_URL);
+                // const conn = await mysql.createConnection(process.env.DATABASE_URL);
                 console.log('entrou no salvar quote')
                 const numero = parseInt(words[1].substring(1, words[1].length - 1));
                 const quote = words.slice(2, words.length).join(' ')
