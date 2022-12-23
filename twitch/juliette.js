@@ -99,12 +99,18 @@ const handleMessages = async (channel, tags, message, self) => {
                 console.log('entrou no salvar quote')
                 const numero = parseInt(words[1].substring(1, words[1].length - 1));
                 const quote = words.slice(2, words.length).join(' ')
-                try{
-                    conn.execute(`INSERT INTO quotes (numero, quote, canal) VALUES (${numero}, '${quote}' , "${channelName}")`)
-                    .then(() => console.log('salvou quote ', numero))
-                } catch (e){
-                    console.log(e)
-                }
+                axios.post('https://api.feras.club/quotes', {
+                    quoteNumber: numero,
+                    quote: quote,
+                    channel: 'guzcalp',
+                    channelId: '546486945',
+                })
+                // try{
+                //     conn.execute(`INSERT INTO quotes (numero, quote, canal) VALUES (${numero}, '${quote}' , "${channelName}")`)
+                //     .then(() => console.log('salvou quote ', numero))
+                // } catch (e){
+                //     console.log(e)
+                // }
             }
             if (words.at(-4) === 'ganhou') {
                 console.log(message)

@@ -26,18 +26,9 @@ app.get('/', async (req, res) => {
     res.json({ 'msg': 'oi, pois não?' })
 })
 
-// app.get('/guzcalp/quotes', async(req, res) => {
-//     let quote = 64
-//     setInterval(() => {
-//         try{ 
-//             juliette.client.say('#guzcalp',`!quote ${quote}`)
-//             console.log()
-//         } catch (e) {
-//             res.json({'e': e})
-//         }
-//         quote++
-//     }, 15000)
-// }) 
+app.get('/guzcalp/quotes/:id', async(req, res) => {
+    juliette.client.say('#guzcalp',`!quote ${req.params.id}`)
+}) 
 
 app.get('/horario-oficial', async (req, res) => {
     console.log('horario acionado')
