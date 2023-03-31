@@ -183,8 +183,9 @@ const handleDiscordInteraction = async (interaction) => {
 			});
 			const gptResponse = completion.data.choices[0].message;
 			console.log(gptResponse.content)
+			await interaction.editReply(`**prompt tokens**: ${completion.data.usage.prompt_tokens} | **competion_tokens**: ${completion.data.usage.completion_tokens} | **total**: ${completion.data.usage.total_tokens}`)
 			utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
-				await interaction.editReply(m)
+				await interaction.followUp(m)
 			})
 			break;
 	}
