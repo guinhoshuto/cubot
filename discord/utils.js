@@ -12,4 +12,12 @@ async function animatedText(interaction, sequence, delay, erase){
     if(erase) await interaction.deleteReply();
 }
 
-module.exports = { animatedText }
+function splitBigMessages(message){
+  let arr = [];
+  for(let i = 0; i < message.length; i+=1999) {
+    arr.push(message.substr(i, 1999));
+  }
+  return arr;
+}
+
+module.exports = { animatedText, splitBigMessages }

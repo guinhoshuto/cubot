@@ -1,4 +1,3 @@
-const { Configuration, OpenAIApi } = require('openai');
 const tmi = require('tmi.js');
 const utils = require('./utils');
 const axios = require('axios');
@@ -12,11 +11,6 @@ require('dotenv').config();
 const kappa = new Kappa();
 
 
-// const configuration = new Configuration({
-//     apiKey: process.env.OPENAI_API_KEY
-// })
-// const openai = new OpenAIApi(configuration)
-// conn.connect();
 
 const client = new tmi.Client({
     connection: { reconnect: true },

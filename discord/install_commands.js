@@ -3,7 +3,7 @@ const { Routes } = require('discord-api-types/v9');
 const commands = require('./commands')
 require('dotenv').config()
 
-const teste = false;
+const teste = true;
 const guild = teste ? process.env.GUILD_TESTE : process.env.GUILD_ID;
 
 const rest = new REST({ version: '9'}).setToken(process.env.DISCORD_TOKEN);

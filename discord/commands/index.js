@@ -15,6 +15,7 @@ const taemingles = require('./taemingles')
 const ifood = require('./ifood')
 const slots = require('./slots')
 const recalp = require('./recalp')
+const gpt = require('./gpt')
 
 module.exports = [
     cu,
@@ -33,5 +34,6 @@ module.exports = [
     vibing,
     taemingles,
     ifood,
-    slots
+    slots,
+    gpt
 ]

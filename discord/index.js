@@ -10,6 +10,7 @@ const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
 const HorarioOficial = require('../services/horario.service');
 const Slots = require('../services/slots.service');
+const openai = require('../lib/openai')
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
@@ -90,13 +91,14 @@ const handleDiscordInteraction = async (interaction) => {
 			await cubot.channels.cache.get(interaction.channelId).send({ embeds: [wish] });
 			break;
 		case 'genio':
+			await interaction.reply('hmmmm')
 			const nome = interaction.options.getString('nome');
 			if (nome.length === 1) {
-				await interaction.reply({ content: 'porra, não fode', ephemeral: true });
+				await interaction.editReply({ content: 'porra, não fode', ephemeral: true });
 				break;
 			}
 			const msg = await axios.get(`http://feras-leaderboards.herokuapp.com/guzclap/genio/${nome}`)
-			await interaction.reply(msg.data.msg);
+			await interaction.editReply(msg.data.msg);
 			break;
 		case 'cu':
 			await interaction.reply("@cali#5795");
@@ -172,6 +174,18 @@ const handleDiscordInteraction = async (interaction) => {
 			const testeConnection = new AudioChannel(cubot, interaction.channelId);
 			testeConnection.playAudio(horarioOficial.horarioOficialFile())
 			await interaction.reply({ content: 'hm', ephemeral: true })
+			break;
+		case 'gpt':
+			await interaction.reply('hmmm')
+			const completion = await openai.createChatCompletion({
+				model: "gpt-3.5-turbo",
+				messages: [{role: "user", content: interaction.options.getString('prompt')}],
+			});
+			const gptResponse = completion.data.choices[0].message;
+			console.log(gptResponse.content)
+			utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
+				await interaction.editReply(m)
+			})
 			break;
 	}
 }
