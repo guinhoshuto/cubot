@@ -43,9 +43,19 @@ const handleDiscordInteraction = async (interaction) => {
 		}
 	}
 	if(interaction.isButton()){
-		const buttomConnection = new AudioChannel(cubot, interaction.channelId);
-		const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
-		buttomConnection.playAudio(buttomFile)
+		switch(interaction.customId){
+			case 'gptRefresh':
+				await interaction.followUp('refreshei')
+				break;
+			case 'gptRefresh':
+				await interaction.followUp('continuei')
+				break;
+			default:
+				const buttomConnection = new AudioChannel(cubot, interaction.channelId);
+				const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
+				buttomConnection.playAudio(buttomFile)
+				break;
+		}
 	}
 	if (!interaction.isCommand()) return;
 	switch (interaction.commandName) {
@@ -176,17 +186,31 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'gpt':
-			await interaction.reply('hmmm')
+			await interaction.reply(interaction.options.getString('propmt'))
 			const completion = await openai.createChatCompletion({
 				model: "gpt-3.5-turbo",
 				messages: [{role: "user", content: interaction.options.getString('prompt')}],
 			});
 			const gptResponse = completion.data.choices[0].message;
 			console.log(gptResponse.content)
-			await interaction.editReply(`**prompt tokens**: ${completion.data.usage.prompt_tokens} | **competion_tokens**: ${completion.data.usage.completion_tokens} | **total**: ${completion.data.usage.total_tokens}`)
+			await interaction.followUp(`**prompt tokens**: ${completion.data.usage.prompt_tokens} | **competion_tokens**: ${completion.data.usage.completion_tokens} | **total**: ${completion.data.usage.total_tokens}`)
 			utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
 				await interaction.followUp(m)
 			})
+			const gptButtons = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+						.setCustomId('gptRefresh')
+						.setLabel('Refresh')
+						.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+						.setCustomId('gptContinue')
+						.setLabel('Continuar conversa')
+						.setStyle('PRIMARY'),
+				)
+			await interaction.followUp({ content: '...', components: [getButtons]})
 			break;
 	}
 }
