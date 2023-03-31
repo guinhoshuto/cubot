@@ -186,7 +186,7 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'gpt':
-			await interaction.reply(`${interaction.options.getString('propmt')}`)
+			await interaction.reply(interaction.options.getString('prompt'))
 			const completion = await openai.createChatCompletion({
 				model: "gpt-3.5-turbo",
 				messages: [{role: "user", content: interaction.options.getString('prompt')}],
@@ -210,7 +210,7 @@ const handleDiscordInteraction = async (interaction) => {
 						.setLabel('Continuar conversa')
 						.setStyle('PRIMARY'),
 				)
-			await interaction.followUp({ content: '...', components: [getButtons]})
+			await interaction.followUp({ content: '...', components: [gptButtons]})
 			break;
 	}
 }
