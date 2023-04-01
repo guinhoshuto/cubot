@@ -1,5 +1,4 @@
-const { ContextMenuCommandBuilder } = require('@discordjs/builders');
-const { ApplicationCommandType } = require('discord-api-types/v9');
+const { SlashCommandBuilder, ApplicationCommandType, ContextMenuCommandBuilder } = require('discord.js');
 
 const data = new ContextMenuCommandBuilder()
 	.setName('Aff tá em inglês')

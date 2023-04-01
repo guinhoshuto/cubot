@@ -1,5 +1,12 @@
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
-// const { createReadStream } = require('node:fs');
+const { 
+	Client, 
+	ButtonStyle, 
+	GatewayIntentBits, 
+	MessageEmbed, 
+	ActionRowBuilder,
+	ButtonBuilder,
+	StringSelectMenuBuilder
+} = require('discord.js');
 
 const path = require('path');
 const axios = require('axios');
@@ -18,10 +25,10 @@ const translate = new TranslateService();
 
 const cubot = new Client({
 	intents: [
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MESSAGES,
-		Intents.FLAGS.GUILD_MEMBERS,
-		Intents.FLAGS.GUILD_VOICE_STATES
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates
 	]
 })
 
@@ -30,7 +37,7 @@ const slotsService = new Slots();
 
 const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
-	if(interaction.isMessageContextMenu()){
+	if(interaction.isUserContextMenuCommand()){
 		const originalMessage = await cubot.channels.cache.get(interaction.channelId).messages.fetch(interaction.targetId)
 		let msg = await translate.translate(originalMessage.content, 'pt-br')
 		console.log(msg)
@@ -43,12 +50,13 @@ const handleDiscordInteraction = async (interaction) => {
 		}
 	}
 	if(interaction.isButton()){
+		console.log('botao')
 		switch(interaction.customId){
 			case 'gptRefresh':
-				await interaction.followUp('refreshei')
+				await interaction.reply('refreshei')
 				break;
 			case 'gptRefresh':
-				await interaction.followUp('continuei')
+				await interaction.reply('continuei')
 				break;
 			default:
 				const buttomConnection = new AudioChannel(cubot, interaction.channelId);
@@ -61,9 +69,9 @@ const handleDiscordInteraction = async (interaction) => {
 	switch (interaction.commandName) {
 		case 'copypasta':
 			const copypastas = await copypasta.getSelectCopypastas();
-			const copypastaSelect = new MessageActionRow()
+			const copypastaSelect = new ActionRowBuilder()
                 .addComponents(
-                    new MessageSelectMenu()
+                    new StringSelectMenuBuilder()
                         .setCustomId('copypasta')
                         .setPlaceholder('Selecione')
                         .addOptions(copypastas)
@@ -124,12 +132,12 @@ const handleDiscordInteraction = async (interaction) => {
 		case 'recalp':
 			const userId = interaction.user.id
 			console.log(interaction)
-			const recalpButton = new MessageActionRow()
+			const recalpButton = new ActionRowBuilder()
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setURL(`https://recalp.feras.club/?user_id=${userId}`)
 						.setLabel('RECALP')
-						.setStyle('LINK'),
+						.setStyle(ButtonStyle.Link),
 				)
 			await interaction.reply({ content: 'Esse é o seu recalp de 2022', ephemeral: true, components: [recalpButton]})
 
@@ -152,30 +160,30 @@ const handleDiscordInteraction = async (interaction) => {
 			await slotsService.roll(interaction);
 			break;
 		case 'instants':
-			const row = new MessageActionRow()
+			const row = new ActionRowBuilder()
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('corvo')
 						.setLabel('Corvo')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				)
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('tistreza')
 						.setLabel('Tistreza')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				)
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('rapaz')
 						.setLabel('Rapaz')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				)
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('sair')
 						.setLabel('Sair')
-						.setStyle('DANGER'),
+						.setStyle(ButtonStyle.Danger),
 				)
 			await interaction.reply({ content: 'Selecione um áudio', components: [row]})
 			break;
@@ -197,18 +205,18 @@ const handleDiscordInteraction = async (interaction) => {
 			utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
 				await interaction.followUp(m)
 			})
-			const gptButtons = new MessageActionRow()
+			const gptButtons = new ActionRowBuilder()
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('gptRefresh')
 						.setLabel('Refresh')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				)
 				.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('gptContinue')
 						.setLabel('Continuar conversa')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				)
 			await interaction.followUp({ content: '...', components: [gptButtons]})
 			break;

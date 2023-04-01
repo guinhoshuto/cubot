@@ -1,5 +1,10 @@
 const { createReadStream } = require('node:fs');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { 
+    joinVoiceChannel, 
+    createAudioPlayer, 
+    createAudioResource, 
+    AudioPlayerStatus 
+} = require('@discordjs/voice');
 const guildId = '855694948707991593';
 
 module.exports = class AudioChannel{
