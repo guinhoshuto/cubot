@@ -1,39 +1,30 @@
 const { 
-	Client, 
 	ButtonStyle, 
-	GatewayIntentBits, 
 	MessageEmbed, 
 	ActionRowBuilder,
 	ButtonBuilder,
 	StringSelectMenuBuilder
 } = require('discord.js');
 
+const { cubot } = require('../lib/discord')
 const path = require('path');
 const axios = require('axios');
 const utils = require('./utils');
 const AudioChannel = require('./audioChannel');
 const TranslateService = require('../services/translate.service');
+const ChatGPTService = require('../services/chatgpt.service');
 const discordTTS = require('../services/discordTTS.service');
 const CopypastaService = require('../services/copypasta.service')
 const HorarioOficial = require('../services/horario.service');
 const Slots = require('../services/slots.service');
-const openai = require('../lib/openai')
 require('dotenv').config()
 
 const copypasta = new CopypastaService();
 const translate = new TranslateService();
 
-const cubot = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildVoiceStates
-	]
-})
-
 const geralChannel = cubot.channels.cache.get('855695828856864799');
 const slotsService = new Slots();
+const chatGPT = new ChatGPTService()
 
 const handleDiscordInteraction = async (interaction) => {
 	const horarioOficial = new HorarioOficial()
@@ -43,20 +34,26 @@ const handleDiscordInteraction = async (interaction) => {
 		console.log(msg)
 		await interaction.reply({content: msg, ephemeral: false})
 	}
-	if(interaction.isSelectMenu()){
+	if(interaction.isStringSelectMenu()){
 		if(interaction.customId === 'copypasta'){
 			let msg = await copypasta.getCopypasta(interaction.values[0])
 			await interaction.update({ content: msg, ephemeral:true });	
 		}
 	}
 	if(interaction.isButton()){
-		console.log('botao')
 		switch(interaction.customId){
 			case 'gptRefresh':
+
+				// const lastMessages = await cubot.channels.cache.get(interaction.channelId).messages.fetch(interaction.message.reference.mesageId);
+				// console.log(await utils.getChannelLastMessages(cubot.channels.cache.get(interaction.channelId), 1))
+				console.log( await utils.getReferencedMessage(cubot.channels.cache.get(interaction.channelId), interaction))
+				console.log(interaction.message.reference.mesageId)
+				await chatGPT.answerPrompt(interaction, true)
+				// console.log(originalPrompt)
 				await interaction.reply('refreshei')
 				break;
-			case 'gptRefresh':
-				await interaction.reply('continuei')
+			case 'gptContinue':
+				await interaction.reply('ainda não sei :(')
 				break;
 			default:
 				const buttomConnection = new AudioChannel(cubot, interaction.channelId);
@@ -194,17 +191,7 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
 		case 'gpt':
-			await interaction.reply(interaction.options.getString('prompt'))
-			const completion = await openai.createChatCompletion({
-				model: "gpt-3.5-turbo",
-				messages: [{role: "user", content: interaction.options.getString('prompt')}],
-			});
-			const gptResponse = completion.data.choices[0].message;
-			console.log(gptResponse.content)
-			await interaction.followUp(`**prompt tokens**: ${completion.data.usage.prompt_tokens} | **competion_tokens**: ${completion.data.usage.completion_tokens} | **total**: ${completion.data.usage.total_tokens}`)
-			utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
-				await interaction.followUp(m)
-			})
+			await chatGPT.answerPrompt(interaction)
 			const gptButtons = new ActionRowBuilder()
 				.addComponents(
 					new ButtonBuilder()
@@ -223,4 +210,4 @@ const handleDiscordInteraction = async (interaction) => {
 	}
 }
 
-module.exports = { cubot, handleDiscordInteraction, geralChannel }
+module.exports = { handleDiscordInteraction, geralChannel }

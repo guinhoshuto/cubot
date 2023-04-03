@@ -20,4 +20,16 @@ function splitBigMessages(message){
   return arr;
 }
 
-module.exports = { animatedText, splitBigMessages }
+async function getChannelLastMessages(channel, qtd=5){
+  const lastMessages = []
+  console.log(await channel.messages.cache.get(3))
+  // const fetchLastMessages = await channel.messages.fetch(qtd).map(m => lastMessages.append({'id': m.id, 'content': m.content}));
+  return lastMessages;
+}
+
+async function getReferencedMessage(channel, interaction){
+  const referencedMessage = await channel.messages.fetch(interaction.message.reference.messageId)
+  return referencedMessage.content
+
+}
+module.exports = { animatedText, splitBigMessages, getReferencedMessage, getChannelLastMessages }

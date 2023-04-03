@@ -1,7 +1,8 @@
 const juliette = require('./twitch/juliette')
 const HorarioOficial = require('./services/horario.service')
 const audioChannel = require('./discord/audioChannel')
-const { cubot, handleDiscordInteraction } = require('./discord')
+const { handleDiscordInteraction } = require('./discord')
+const { cubot, serverLogin } = require('./lib/discord')
 const express = require('express')
 const { GuildScheduledEventPrivacyLevel } = require('discord-api-types/v10')
 require('dotenv').config();
@@ -12,14 +13,7 @@ app.listen(process.env.PORT);
 juliette.client.connect();
 juliette.client.on('message', juliette.handleMessages);
 
-cubot.on('ready', () => {
-    console.log('entrei')
-});
-
-cubot.login(process.env.DISCORD_TOKEN)
-    .then(() => console.log('ok'))
-    .catch((e) => console.log('e:', e))
-
+serverLogin();
 cubot.on('interactionCreate', handleDiscordInteraction)
 
 app.get('/', async (req, res) => {
