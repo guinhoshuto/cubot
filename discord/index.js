@@ -10,7 +10,7 @@ const { cubot } = require('../lib/discord')
 const path = require('path');
 const axios = require('axios');
 const utils = require('./utils');
-const AudioChannel = require('./audioChannel');
+const AudioChannel = require('../services/audioChannel.service');
 const TranslateService = require('../services/translate.service');
 const ChatGPTService = require('../services/chatgpt.service');
 const discordTTS = require('../services/discordTTS.service');
@@ -43,9 +43,6 @@ const handleDiscordInteraction = async (interaction) => {
 	if(interaction.isButton()){
 		switch(interaction.customId){
 			case 'gptRefresh':
-
-				// const lastMessages = await cubot.channels.cache.get(interaction.channelId).messages.fetch(interaction.message.reference.mesageId);
-				// console.log(await utils.getChannelLastMessages(cubot.channels.cache.get(interaction.channelId), 1))
 				console.log( await utils.getReferencedMessage(cubot.channels.cache.get(interaction.channelId), interaction))
 				console.log(interaction.message.reference.mesageId)
 				await chatGPT.answerPrompt(interaction, true)
@@ -56,7 +53,7 @@ const handleDiscordInteraction = async (interaction) => {
 				await interaction.reply('ainda não sei :(')
 				break;
 			default:
-				const buttomConnection = new AudioChannel(cubot, interaction.channelId);
+				const buttomConnection = new AudioChannel(cubot, interaction.guildId, interaction.channelId);
 				const buttomFile = path.join(__dirname, 'src/sounds/' + interaction.customId +  '.mp3')
 				buttomConnection.playAudio(buttomFile)
 				break;
@@ -79,7 +76,7 @@ const handleDiscordInteraction = async (interaction) => {
 			const corvoFile = path.join(__dirname, 'src/sounds/corvo.mp3');
 			switch (cubot.channels.cache.get(interaction.channelId).type) {
 				case 'GUILD_VOICE':
-					const corvoConnection = new AudioChannel(cubot, interaction.channelId);
+					const corvoConnection = new AudioChannel(cubot, interaction.guildId, interaction.channelId);
 					corvoConnection.playAudio(corvoFile)
 					break;
 				case 'GUILD_TEXT':
@@ -88,7 +85,7 @@ const handleDiscordInteraction = async (interaction) => {
 			}
 			break;
 		case 'fala':
-			const falaConnection =  new AudioChannel(cubot, interaction.channelId)
+			const falaConnection =  new AudioChannel(cubot, interaction.guildId, interaction.channelId)
 			const ttsInstance = new discordTTS();
 			ttsInstance.tts(interaction.options.getString('falantes'), interaction.options.getString('texto'), falaConnection)
 			await interaction.reply({ content: 'hm', ephemeral: true })
@@ -186,7 +183,7 @@ const handleDiscordInteraction = async (interaction) => {
 			break;
 
 		case 'teste':
-			const testeConnection = new AudioChannel(cubot, interaction.channelId);
+			const testeConnection = new AudioChannel(cubot, interaction.guildId, interaction.channelId);
 			testeConnection.playAudio(horarioOficial.horarioOficialFile())
 			await interaction.reply({ content: 'hm', ephemeral: true })
 			break;
@@ -207,6 +204,11 @@ const handleDiscordInteraction = async (interaction) => {
 				)
 			await interaction.followUp({ content: '...', components: [gptButtons]})
 			break;
+		case 'alexa':
+			let corvo = path.join(__dirname, 'src/sounds/corvo.mp3');
+			const alexaConnection = new AudioChannel(cubot, interaction.guildId , interaction.channelId);
+			alexaConnection.recordCommand()
+			// alexaConnection.playAudio(corvo)
 	}
 }
 

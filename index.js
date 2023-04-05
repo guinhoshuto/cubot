@@ -1,6 +1,6 @@
 const juliette = require('./twitch/juliette')
 const HorarioOficial = require('./services/horario.service')
-const audioChannel = require('./discord/audioChannel')
+const audioChannel = require('./services/audioChannel.service')
 const { handleDiscordInteraction } = require('./discord')
 const { cubot, serverLogin } = require('./lib/discord')
 const express = require('express')

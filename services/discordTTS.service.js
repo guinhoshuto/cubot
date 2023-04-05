@@ -1,5 +1,5 @@
 const axios = require('axios')
-const audioChannel = require('../discord/audioChannel')
+const audioChannel = require('./audioChannel.service')
 
 module.exports = class DiscordTTS{
     constructor(){

@@ -16,8 +16,10 @@ const ifood = require('./ifood')
 const slots = require('./slots')
 const recalp = require('./recalp')
 const gpt = require('./gpt')
+const alexa = require('./alexa')
 
 module.exports = [
+    alexa,
     cu,
     mood,
     guz,

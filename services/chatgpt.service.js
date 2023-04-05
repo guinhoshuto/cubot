@@ -1,6 +1,8 @@
+const fs = require('fs')
 const utils = require('../discord/utils')
 const { cubot } = require('../lib/discord')
 const openai = require('../lib/openai')
+const path = require('path');
 
 module.exports = class ChatGPTService{
     constructor(){}
@@ -20,4 +22,13 @@ module.exports = class ChatGPTService{
             await interaction.followUp(m)
         })
     }
+
+    async answerVoice(interaction){
+        const resp = await openai.createTranscription(
+            fs.createReadStream("audio.mp3"),
+            "whisper-1"
+        );
+        await interaction.reply(resp)
+    }
+
 }
