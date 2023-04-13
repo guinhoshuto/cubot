@@ -1,12 +1,16 @@
-const { createReadStream } = require('node:fs');
+const { createReadStream, createWriteStream } = require('node:fs');
+const { pipeline } = require('node:stream')
+const  {opus }  = require('prism-media')
 const path = require('path');
 const { 
     joinVoiceChannel, 
     createAudioPlayer, 
     createAudioResource, 
-    AudioPlayerStatus 
+    AudioPlayerStatus, 
+    EndBehaviorType
 } = require('@discordjs/voice');
 const ffmpeg = require('ffmpeg');
+const { channel } = require('node:diagnostics_channel');
 // const guildId = '855694948707991593';
 
 module.exports = class AudioChannel{
@@ -34,18 +38,42 @@ module.exports = class AudioChannel{
 
     async recordCommand(){
         // https://www.youtube.com/watch?v=h7CC-8kTsGI
-        const output = path.join(__dirname, '..', 'discord/src/prompt.mp3')
-        try {
-        var process = new ffmpeg(output);
-        process.then(function (audio) {
-            audio.fnExtractSoundToMP3(output, function (error, file) {
-            if (!error) console.log('Audio File: ' + file);
-            });
-        }, function (err) {
-            console.log('Error: ' + err);      
-        });
-        } catch (e) {
-        console.log(e);
-        }
+        const receiver = this.connection.receiver;
+        receiver.speaking.on('start', (userId) => {
+            console.log('ooo')
+            this.createListeningStream(receiver, userId, this.client.users.cache.get(userId))
+            this.connection.destroy()
+        })
+        // this.channel.send('lll')
+    }
+
+    createListeningStream(receiver, userId, user){
+        const opusStream = receiver.subscribe(userId, {
+            end: {
+                behavior: EndBehaviorType.AfterSilence,
+                duration: 1000,
+            }
+        })
+
+        const oggStream = new opus.OggLogicalBitstream({
+            opusHead: new opus.OpusHead({
+                channelCount: 2, 
+                sampleRate:480000
+            }),
+            pageSizeControl: {
+                maxPackets: 10
+            }
+        })
+        const output = path.join(__dirname, '..', 'discord/src/prompt.pcm')
+        const out = createWriteStream(output, { flags: 'a'})
+        console.log('gravou')
+
+        pipeline(opusStream, oggStream, out, (err) => {
+            if(err) {
+                console.log('erro ao salvar áudio')
+            } else {
+                console.log('salvou áudio')
+            }
+        })
     }
 }
