@@ -1,6 +1,6 @@
 const { createReadStream, createWriteStream } = require('node:fs');
 const { pipeline } = require('node:stream')
-const  {opus }  = require('prism-media')
+const prism = require('prism-media')
 const path = require('path');
 const { 
     joinVoiceChannel, 
@@ -42,7 +42,7 @@ module.exports = class AudioChannel{
         receiver.speaking.on('start', (userId) => {
             console.log('ooo')
             this.createListeningStream(receiver, userId, this.client.users.cache.get(userId))
-            this.connection.destroy()
+            // this.connection.destroy()
         })
         // this.channel.send('lll')
     }
@@ -55,8 +55,8 @@ module.exports = class AudioChannel{
             }
         })
 
-        const oggStream = new opus.OggLogicalBitstream({
-            opusHead: new opus.OpusHead({
+        const oggStream = new prism.opus.OggLogicalBitstream({
+            opusHead: new prism.opus.OpusHead({
                 channelCount: 2, 
                 sampleRate:480000
             }),
@@ -70,10 +70,17 @@ module.exports = class AudioChannel{
 
         pipeline(opusStream, oggStream, out, (err) => {
             if(err) {
+                console.log(err)
                 console.log('erro ao salvar áudio')
             } else {
                 console.log('salvou áudio')
             }
+        })
+        const process = new ffmpeg(output);        
+        process.then(audio =>{
+            audio.fnExtractSoundToMP3(path.join(__dirname, '..', 'discord/src/prompt.mp3'), async (err, file) => {
+                   
+            })
         })
     }
 }
