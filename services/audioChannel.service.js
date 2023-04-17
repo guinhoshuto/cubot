@@ -69,31 +69,31 @@ module.exports = class AudioChannel{
         //     sampleRate: 16000
         // }))
 
-        // const oggStream = new prism.opus.OggLogicalBitstream({
-        //     opusHead: new prism.opus.OpusHead({
-        //         channelCount: 2, 
-        //         sampleRate:48000
-        //     }),
-        //     pageSizeControl: {
-        //         maxPackets: 10
-        //     }
-        // })
+        const oggStream = new prism.opus.OggLogicalBitstream({
+            opusHead: new prism.opus.OpusHead({
+                channelCount: 2, 
+                sampleRate:48000
+            }),
+            pageSizeControl: {
+                maxPackets: 10
+            }
+        })
 
 // Encode and decode.
-        const encoded = encoder.encode(opusStream);
+        // const encoded = encoder.encode(opusStream);
 
-        console.log(encoded)
+        // console.log(encoded)
         const out = createWriteStream(output, { flags: 'a'})
         console.log('gravou')
 
-        // pipeline(opusStream, oggStream, out, (err) => {
-        //     if(err) {
-        //         console.log('erro ao salvar áudio')
-        //         console.log(err)
-        //     } else {
-        //         console.log('salvou áudio')
-        //     }
-        // })
+        pipeline(opusStream, oggStream, out, (err) => {
+            if(err) {
+                console.log('erro ao salvar áudio')
+                console.log(err)
+            } else {
+                console.log('salvou áudio')
+            }
+        })
 
         // const process = new ffmpeg(output);        
         // process.then(audio =>{
