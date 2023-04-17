@@ -205,9 +205,11 @@ const handleDiscordInteraction = async (interaction) => {
 			await interaction.followUp({ content: '...', components: [gptButtons]})
 			break;
 		case 'alexa':
-			let corvo = path.join(__dirname, 'src/sounds/corvo.mp3');
+			interaction.reply('...')
+			// let audioPrompt = path.join(__dirname, 'src/sounds/corvo.mp3');
 			const alexaConnection = new AudioChannel(cubot, interaction.guildId , interaction.channelId);
-			alexaConnection.recordCommand()
+			await alexaConnection.recordCommand()
+			await chatGPT.answerVoice(interaction)
 			// alexaConnection.playAudio(corvo)
 	}
 }

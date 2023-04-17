@@ -43,33 +43,38 @@ module.exports = class AudioChannel{
     async recordCommand(){
         // https://www.youtube.com/watch?v=h7CC-8kTsGI
         const receiver = this.connection.receiver;
-        receiver.speaking.on('start', (userId) => {
-            console.log('ooo')
-            this.createListeningStream(
+        receiver.speaking.on('start', async (userId) => {
+            await this.createListeningStream(
                 receiver, 
                 userId, 
                 this.client.users.cache.get(userId)
             )
-            // this.connection.destroy()
+            console.log('speaker on')
+        });
+        receiver.speaking.on('end', () => {
+            console.log('diz que parou de falar')
+            this.connection.destroy()
+            return
         })
         // this.channel.send('lll')
     }
 
-    createListeningStream(receiver, userId, user){
-        const output = path.join(__dirname, '..', 'discord/src/praompt.wav')
-           const encoder = new OpusEncoder(16000, 1)
+     createListeningStream(receiver, userId, user){
+        const output = path.join(__dirname, '..', 'discord/src/prompt.wav')
+           const encoder = new OpusEncoder(48000, 1)
 
-        const opusStream = receiver.subscribe(userId, {
+        receiver.subscribe(userId, {
             end: {
                 behavior: EndBehaviorType.AfterSilence,
-                duration: 100,
+                duration: 5000,
             }
         })
         .pipe(new OpusDecodingStream({}, encoder))
         .pipe(new FileWriter(output, {
             channels: 1,
-            sampleRate: 16000
+            sampleRate: 48000
         }))
+        console.log('gravou')
 
         // const oggStream = new prism.opus.OggLogicalBitstream({
         //     opusHead: new prism.opus.OpusHead({
