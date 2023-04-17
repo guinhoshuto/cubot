@@ -1,5 +1,7 @@
 const { createReadStream, createWriteStream } = require('node:fs');
+const { OpusEncoder, OpusDecodingStream } = require('@discordjs/opus');
 const { pipeline } = require('node:stream')
+const fs = require('fs')
 const prism = require('prism-media')
 const path = require('path');
 const { 
@@ -41,46 +43,63 @@ module.exports = class AudioChannel{
         const receiver = this.connection.receiver;
         receiver.speaking.on('start', (userId) => {
             console.log('ooo')
-            this.createListeningStream(receiver, userId, this.client.users.cache.get(userId))
+            this.createListeningStream(
+                receiver, 
+                userId, 
+                this.client.users.cache.get(userId)
+            )
             // this.connection.destroy()
         })
         // this.channel.send('lll')
     }
 
     createListeningStream(receiver, userId, user){
+        const output = path.join(__dirname, '..', 'discord/src/praompt.pcm')
+           const encoder = new OpusEncoder(16000, 1)
+
         const opusStream = receiver.subscribe(userId, {
             end: {
                 behavior: EndBehaviorType.AfterSilence,
-                duration: 1000,
+                duration: 100,
             }
         })
+        // .pipe(new OpusDecodingStream({}, encoder))
+        // .pipe(new FileWriter(output, {
+        //     channels: 1,
+        //     sampleRate: 16000
+        // }))
 
-        const oggStream = new prism.opus.OggLogicalBitstream({
-            opusHead: new prism.opus.OpusHead({
-                channelCount: 2, 
-                sampleRate:480000
-            }),
-            pageSizeControl: {
-                maxPackets: 10
-            }
-        })
-        const output = path.join(__dirname, '..', 'discord/src/prompt.pcm')
+        // const oggStream = new prism.opus.OggLogicalBitstream({
+        //     opusHead: new prism.opus.OpusHead({
+        //         channelCount: 2, 
+        //         sampleRate:48000
+        //     }),
+        //     pageSizeControl: {
+        //         maxPackets: 10
+        //     }
+        // })
+
+// Encode and decode.
+        const encoded = encoder.encode(opusStream);
+
+        console.log(encoded)
         const out = createWriteStream(output, { flags: 'a'})
         console.log('gravou')
 
-        pipeline(opusStream, oggStream, out, (err) => {
-            if(err) {
-                console.log(err)
-                console.log('erro ao salvar áudio')
-            } else {
-                console.log('salvou áudio')
-            }
-        })
-        const process = new ffmpeg(output);        
-        process.then(audio =>{
-            audio.fnExtractSoundToMP3(path.join(__dirname, '..', 'discord/src/prompt.mp3'), async (err, file) => {
+        // pipeline(opusStream, oggStream, out, (err) => {
+        //     if(err) {
+        //         console.log('erro ao salvar áudio')
+        //         console.log(err)
+        //     } else {
+        //         console.log('salvou áudio')
+        //     }
+        // })
+
+        // const process = new ffmpeg(output);        
+        // process.then(audio =>{
+        //     audio.fnExtractSoundToMP3(path.join(__dirname, '..', 'discord/src/prompt.mp3'), async (err, file) => {
                    
-            })
-        })
+        //     })
+        // })
     }
 }
