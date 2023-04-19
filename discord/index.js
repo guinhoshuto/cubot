@@ -50,7 +50,11 @@ const handleDiscordInteraction = async (interaction) => {
 				await interaction.reply('refreshei')
 				break;
 			case 'gptContinue':
-				await interaction.reply('ainda não sei :(')
+				const thread = await interaction.message.startThread({
+					name: 'papos',
+					autoArchiveDuration: 60
+				})
+				// await interaction.reply('ainda não sei :(')
 				break;
 			default:
 				const buttomConnection = new AudioChannel(cubot, interaction.guildId, interaction.channelId);
@@ -206,7 +210,6 @@ const handleDiscordInteraction = async (interaction) => {
 			break;
 		case 'alexa':
 			interaction.reply('...')
-			// let audioPrompt = path.join(__dirname, 'src/sounds/corvo.mp3');
 			const alexaConnection = new AudioChannel(cubot, interaction.guildId , interaction.channelId);
 			await alexaConnection.recordCommand()
 			await chatGPT.answerVoice(interaction)

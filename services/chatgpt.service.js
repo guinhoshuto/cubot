@@ -7,10 +7,14 @@ const path = require('path');
 module.exports = class ChatGPTService{
     constructor(){}
 
-    async getCompletion(prompt){
+    async getCompletion(prompt, system){
+        const message = [{role: "user", content: prompt}];
+        if(system != '') message.unshift({role: "system", content: system})
+
+        console.log(message)
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: [{role: "user", content: prompt}],
+            messages: message,
         });
         return completion
     }
@@ -19,9 +23,11 @@ module.exports = class ChatGPTService{
         await interaction.reply('...')
         const prompt = refresh ? await utils.getReferencedMessage(cubot.channels.cache.get(interaction.channelId), interaction) : interaction.options.getString('prompt')
         await interaction.editReply(prompt)
-        const completion = await this.getCompletion(prompt)
+        const system = interaction.options.getString('system') ? interaction.options.getString('system') : "";
+
+        const completion = await this.getCompletion(prompt, system)
         const gptResponse = completion.data.choices[0].message;
-        console.log(gptResponse.content)
+        // console.log(gptResponse.content)
 
         await interaction.followUp(`**prompt tokens**: ${completion.data.usage.prompt_tokens} | **competion_tokens**: ${completion.data.usage.completion_tokens} | **total**: ${completion.data.usage.total_tokens}`)
         utils.splitBigMessages(gptResponse.content).forEach(async(m) =>  {
@@ -42,3 +48,4 @@ module.exports = class ChatGPTService{
     }
 
 }
+
