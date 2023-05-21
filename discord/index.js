@@ -196,12 +196,6 @@ const handleDiscordInteraction = async (interaction) => {
 			const gptButtons = new ActionRowBuilder()
 				.addComponents(
 					new ButtonBuilder()
-						.setCustomId('gptRefresh')
-						.setLabel('Refresh')
-						.setStyle(ButtonStyle.Primary),
-				)
-				.addComponents(
-					new ButtonBuilder()
 						.setCustomId('gptContinue')
 						.setLabel('Continuar conversa')
 						.setStyle(ButtonStyle.Primary),
