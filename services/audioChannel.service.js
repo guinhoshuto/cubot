@@ -1,5 +1,5 @@
 const { createReadStream, createWriteStream } = require('node:fs');
-const { OpusEncoder } = require('@discordjs/opus');
+// const { OpusEncoder } = require('@discordjs/opus');
 const { pipeline } = require('node:stream')
 const fs = require('fs');
 const { FileWriter } = require('wav')
@@ -59,55 +59,22 @@ module.exports = class AudioChannel{
         // this.channel.send('lll')
     }
 
-     createListeningStream(receiver, userId, user){
-        const output = path.join(__dirname, '..', 'discord/src/prompt.wav')
-           const encoder = new OpusEncoder(48000, 1)
+    createListeningStream(receiver, userId, user){
+        // const output = path.join(__dirname, '..', 'discord/src/prompt.wav')
+        //    const encoder = new OpusEncoder(48000, 1)
 
-        receiver.subscribe(userId, {
-            end: {
-                behavior: EndBehaviorType.AfterSilence,
-                duration: 5000,
-            }
-        })
-        .pipe(new OpusDecodingStream({}, encoder))
-        .pipe(new FileWriter(output, {
-            channels: 1,
-            sampleRate: 48000
-        }))
+        // receiver.subscribe(userId, {
+        //     end: {
+        //         behavior: EndBehaviorType.AfterSilence,
+        //         duration: 5000,
+        //     }
+        // })
+        // .pipe(new OpusDecodingStream({}, encoder))
+        // .pipe(new FileWriter(output, {
+        //     channels: 1,
+        //     sampleRate: 48000
+        // }))
         console.log('gravou')
-
-        // const oggStream = new prism.opus.OggLogicalBitstream({
-        //     opusHead: new prism.opus.OpusHead({
-        //         channelCount: 2, 
-        //         sampleRate:48000
-        //     }),
-        //     pageSizeControl: {
-        //         maxPackets: 10
-        //     }
-        // })
-
-// Encode and decode.
-        // const encoded = encoder.encode(opusStream);
-
-        // console.log(encoded)
-        // const out = createWriteStream(output, { flags: 'a'})
-        // console.log('gravou')
-
-        // pipeline(opusStream, oggStream, out, (err) => {
-        //     if(err) {
-        //         console.log('erro ao salvar áudio')
-        //         console.log(err)
-        //     } else {
-        //         console.log('salvou áudio')
-        //     }
-        // })
-
-        // const process = new ffmpeg(output);        
-        // process.then(audio =>{
-        //     audio.fnExtractSoundToMP3(path.join(__dirname, '..', 'discord/src/prompt.mp3'), async (err, file) => {
-                   
-        //     })
-        // })
     }
 }
 
