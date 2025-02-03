@@ -16,10 +16,11 @@ const client = new tmi.Client({
     connection: { reconnect: true },
     options: { debug: true },
     identity: {
-        username: 'juliette_freire_bot',
+        username: 'cacare_co',
         password: process.env.TWITCH_OAUTH
     },
-    channels: ['marcellus_v', 'guzcalp', 'guinhoshuto', 'mazeeein']
+    // channels: ['marcellus_v', 'guzcalp', 'guinhoshuto', 'mazeeein']
+    channels: ['guinhoshuto','guzcalp', 'u________u']
 });
 
 const handleMessages = async (channel, tags, message, self) => {
@@ -38,6 +39,30 @@ const handleMessages = async (channel, tags, message, self) => {
     if (self) return;
     message = message.toLowerCase();
     const words = message.split(" ");
+    if (channelName === 'guinhoshuto') {
+        const messages = [
+            "ayo what's good? Stardew time, let’s gooo! 🐸",
+            "Been looking forward to this stream all day 😌🌿",
+            "vibes already immaculate 🎵",
+            "oooh, which farm layout did you pick? 🔥",
+            "Oooh, big flex! Mines about to be easy mode now. 💎",
+            "have u named any of your animals yet? 🐔",
+            "Yeah! Got a cow named Moobert and a chicken named Eggward 😂",
+            "EGGWARD LMFAO 😂",
+            "This stream is my background noise while I draw, perfect vibes rn 😴",
+            "Love that! What are you working on?",
+            "Just doodling some Stardew characters actually, might post later! 🎨",
+            "I love how chill this chat is, no chaos just good vibes 💜✨",
+            "That’s the goal! Chill but fun. Appreciate y’all being here 💕"
+          ];
+        if(tags.username === 'cacare_co'){
+            console.log('teste')
+            for (let i = 0; i < messages.length; i++) {
+                client.say(channel, messages[i])
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+    }
     if (channelName === 'guzcalp' || channelName === 'guinhoshuto' || channelName === 'u________u') {
         console.log(words)
         if (words[0] === '!preceito' || words[0] === '!preceitos') {
